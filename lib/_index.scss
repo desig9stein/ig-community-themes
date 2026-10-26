@@ -1,0 +1,77 @@
+// Helpers for authoring community design systems on top of igniteui-theming.
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use 'igniteui-theming' as *;
+
+/// Returns true when a schema node is a component theme (has `_meta.name`).
+@function _is-component($node) {
+    @return meta.type-of($node) == 'map' and map.has-key($node, '_meta') and map.get($node, '_meta', 'name') != null;
+}
+
+@function _merge-component($base, $overrides, $path) {
+    @each $token, $value in $overrides {
+        @if not map.has-key($base, $token) {
+            @error 'Unknown token "#{$token}" for "#{$path}". Run `npm run tokens -- #{$path}` to list valid tokens.';
+        }
+    }
+
+    @return map.merge($base, $overrides);
+}
+
+/// Builds a design-system schema from a built-in base schema and per-component token overrides.
+/// Tokens are replaced wholesale (no deep merge of token values).
+/// Unknown components or tokens fail the build, so typos never ship silently.
+/// @param {Map} $base - A built-in schema, e.g. `$light-material-schema`.
+/// @param {String} $name - The design system slug, e.g. 'brutalism'.
+/// @param {Map} $overrides - `(button: (flat: (border-radius: 0)), avatar: (background: ...))`.
+@function design-schema($base, $name, $overrides: ()) {
+    $result: $base;
+
+    @each $component, $value in $overrides {
+        @if not map.has-key($base, $component) {
+            @error 'Unknown component "#{$component}". It does not exist in the base schema.';
+        }
+
+        $node: map.get($base, $component);
+
+        @if _is-component($node) {
+            $result: map.set($result, $component, _merge-component($node, $value, $component));
+        } @else {
+            @each $sub, $sub-value in $value {
+                @if not map.has-key($node, $sub) {
+                    @error 'Unknown variant "#{$sub}" for "#{$component}". Valid: #{map.keys($node)}.';
+                }
+
+                $node: map.set($node, $sub, _merge-component(map.get($node, $sub), $sub-value, '#{$component}.#{$sub}'));
+            }
+
+            $result: map.set($result, $component, $node);
+        }
+    }
+
+    @return map.set($result, '_meta', map.merge(map.get($base, '_meta') or (), (design: $name, overridden: map.keys($overrides))));
+}
+
+/// Emits global `--ig-<component>-<token>` custom properties for the components a design overrides
+/// (or for every component when `$all` is true). Every Ignite UI component (Angular, Web Components,
+/// Blazor) reads these at runtime, so this is all the CSS a design system needs on top of its base.
+@mixin design-tokens($schema, $all: false) {
+    $only: map.get($schema, '_meta', 'overridden');
+
+    @each $key, $node in map.remove($schema, '_meta') {
+        @if $all or not $only or list.index($only, $key) {
+            @include _emit($node);
+        }
+    }
+}
+
+@mixin _emit($node) {
+    @if _is-component($node) {
+        @include tokens(digest-schema($node), $mode: 'global');
+    } @else if meta.type-of($node) == 'map' {
+        @each $sub, $sub-node in map.remove($node, '_meta') {
+            @include _emit($sub-node);
+        }
+    }
+}

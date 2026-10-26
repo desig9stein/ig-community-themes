@@ -1,0 +1,22 @@
+// Nord — calm arctic palette with soft corners, built on indigo.
+@use 'igniteui-theming' as *;
+@use 'igniteui-theming/sass/themes/schemas' as schemas;
+@use 'igniteui-theming/sass/typography/presets' as type;
+@use 'igniteui-theming/sass/elevations/presets' as elevation;
+@use '../../lib' as *;
+
+$nord-light-palette: palette($primary: #5e81ac, $secondary: #88c0d0, $surface: #eceff4, $gray: #4c566a, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #81a1c1, $variant: light, $generator: 'legacy');
+$nord-dark-palette: palette($primary: #88c0d0, $secondary: #81a1c1, $surface: #2e3440, $gray: #d8dee9, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #5e81ac, $variant: dark, $generator: 'legacy');
+
+$nord-typeface: "'Inter', sans-serif";
+$nord-type-scale: type.$indigo-type-scale;
+$nord-elevations: elevation.$indigo-elevations;
+$nord-roundness: 0.8;
+
+$_overrides: (
+    navbar: (background: (color: ('primary', 500)), text-color: (contrast-color: ('primary', 500))),
+    avatar: (background: (color: ('secondary', 300))),
+);
+
+$light-nord-schema: design-schema(schemas.$light-indigo-schema, 'nord', $_overrides);
+$dark-nord-schema: design-schema(schemas.$dark-indigo-schema, 'nord', $_overrides);

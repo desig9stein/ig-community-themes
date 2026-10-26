@@ -1,0 +1,13 @@
+{
+  "$schema": "../../schema/manifest.schema.json",
+  "name": "Nord",
+  "slug": "nord",
+  "description": "Calm arctic, north-bluish palette with soft corners.",
+  "base": "indigo",
+  "variants": ["light", "dark"],
+  "maintainers": ["desig9stein"],
+  "authorType": "human",
+  "tags": ["calm", "cool"],
+  "license": "MIT",
+  "fonts": ["https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"]
+}

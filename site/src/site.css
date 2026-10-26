@@ -1,0 +1,41 @@
+/* Neutral chrome for the site itself; the designs only style the Ignite UI components. */
+:root {
+  --site-bg: #f6f6f4;
+  --site-fg: #1d1d1f;
+  --site-muted: #6b6b70;
+  --site-line: #dedede;
+  --site-card: #fff;
+  --site-accent: #2b59ff;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --site-bg: #121214;
+    --site-fg: #ededf0;
+    --site-muted: #a0a0a8;
+    --site-line: #2c2c31;
+    --site-card: #1b1b1f;
+    --site-accent: #8aa2ff;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body.site { margin: 0; font: 15px/1.5 system-ui, sans-serif; background: var(--site-bg); color: var(--site-fg); }
+.site a { color: var(--site-accent); }
+.site-header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 16px 24px; border-bottom: 1px solid var(--site-line); }
+.site-header h1 { font-size: 18px; margin: 0; }
+.site-header .spacer { flex: 1; }
+.site-main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 64px; }
+.lead { color: var(--site-muted); max-width: 70ch; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.design-card { background: var(--site-card); border: 1px solid var(--site-line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.design-card h2 { font-size: 17px; margin: 0; }
+.design-card p { margin: 0; color: var(--site-muted); font-size: 14px; }
+.swatches { display: flex; gap: 4px; }
+.swatches span { flex: 1; height: 28px; border-radius: 6px; border: 1px solid var(--site-line); }
+.meta { display: flex; gap: 6px; flex-wrap: wrap; font-size: 12px; }
+.pill { padding: 2px 8px; border-radius: 99px; border: 1px solid var(--site-line); color: var(--site-muted); }
+.links { display: flex; gap: 12px; margin-top: auto; }
+pre { background: var(--site-card); border: 1px solid var(--site-line); border-radius: 8px; padding: 12px; overflow: auto; font-size: 13px; }
+.site select, .site button.toggle { font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--site-line); background: var(--site-card); color: var(--site-fg); }
+.site label { display: inline-flex; gap: 6px; align-items: center; }

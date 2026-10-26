@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schema/manifest.schema.json",
+  "name": "__NAME__",
+  "slug": "__SLUG__",
+  "description": "One sentence about the look and feel.",
+  "base": "__BASE__",
+  "variants": ["light", "dark"],
+  "maintainers": ["__MAINTAINER__"],
+  "authorType": "human",
+  "tags": [],
+  "license": "MIT"
+}

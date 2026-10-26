@@ -1,0 +1,27 @@
+// __NAME__ — community design system for Ignite UI, built on the "__BASE__" base.
+// Conventions (the build relies on these names):
+//   $__SLUG__-<variant>-palette, $<variant>-__SLUG__-schema  for each variant in manifest.json
+//   $__SLUG__-typeface, $__SLUG__-type-scale, $__SLUG__-elevations, $__SLUG__-roundness
+// List valid components/tokens with: npm run tokens -- <component> --base __BASE__
+@use 'igniteui-theming' as *;
+@use 'igniteui-theming/sass/themes/schemas' as schemas;
+@use 'igniteui-theming/sass/typography/presets' as type;
+@use 'igniteui-theming/sass/elevations/presets' as elevation;
+@use '../../lib' as *;
+
+$__SLUG__-light-palette: palette($primary: #0a6ed1, $secondary: #e8590c, $surface: #fff, $variant: light);
+$__SLUG__-dark-palette: palette($primary: #4dabf7, $secondary: #ff922b, $surface: #1b1b1f, $variant: dark);
+
+$__SLUG__-typeface: type.$__BASE__-typeface;
+$__SLUG__-type-scale: type.$__BASE__-type-scale;
+$__SLUG__-elevations: elevation.$material-elevations;
+$__SLUG__-roundness: null; // 0..1 scales every component radius, null keeps the base
+
+// Token overrides shared by both variants. Palette references like (color: ('gray', 900))
+// resolve against the active palette, so one map usually serves light and dark.
+$_overrides: (
+    // button: (contained: (border-radius: 0)),
+);
+
+$light-__SLUG__-schema: design-schema(schemas.$light-__BASE__-schema, '__SLUG__', $_overrides);
+$dark-__SLUG__-schema: design-schema(schemas.$dark-__BASE__-schema, '__SLUG__', $_overrides);

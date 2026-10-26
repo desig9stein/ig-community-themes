@@ -1,0 +1,94 @@
+// Brutalism — loud colors, hard edges, thick ink outlines and offset shadows.
+@use 'sass:map';
+@use 'igniteui-theming' as *;
+@use 'igniteui-theming/sass/themes/schemas' as schemas;
+@use 'igniteui-theming/sass/typography/presets' as type;
+@use '../../lib' as *;
+
+$brutalism-light-palette: palette(
+    $primary: #ff5c00,
+    $secondary: #2b59ff,
+    $surface: #fffdf5,
+    $gray: #111,
+    $success: #00a35c,
+    $warn: #ffc400,
+    $error: #ff2e4c,
+    $variant: light,
+    $generator: 'legacy' // keep seed colors exact at shade 500
+);
+$brutalism-dark-palette: palette(
+    $primary: #ff7a2e,
+    $secondary: #6f8cff,
+    $surface: #141414,
+    $gray: #f5f5f0,
+    $success: #2ee88f,
+    $warn: #ffd23f,
+    $error: #ff5a72,
+    $variant: dark,
+    $generator: 'legacy'
+);
+
+$brutalism-typeface: "'Space Grotesk', 'Arial Black', sans-serif";
+$brutalism-type-scale: type.$material-type-scale;
+$brutalism-roundness: 0;
+
+// Hard offset shadows instead of soft blur. The ink follows the palette (gray 900),
+// so it is near-black in light and near-white in dark.
+$_ink: var(--ig-gray-900);
+$brutalism-elevations: ();
+
+@for $i from 0 through 24 {
+    $offset: if($i == 0, 0, if($i < 4, 2px, if($i < 12, 4px, 6px)));
+    $brutalism-elevations: map.merge(
+        $brutalism-elevations,
+        ($i: if($i == 0, none, $offset $offset 0 0 $_ink))
+    );
+}
+
+$_ink-line: (color: ('gray', 900));
+
+$_overrides: (
+    button: (
+        flat: (border-color: $_ink-line, hover-border-color: $_ink-line, focus-border-color: $_ink-line),
+        outlined: (border-color: $_ink-line, hover-border-color: $_ink-line, focus-border-color: $_ink-line),
+        contained: (
+            border-color: $_ink-line,
+            hover-border-color: $_ink-line,
+            focus-border-color: $_ink-line,
+            background: (color: ('primary', 500)),
+            hover-background: (color: ('primary', 600)),
+            focus-background: (color: ('primary', 600)),
+            active-background: (color: ('primary', 700)),
+            focus-hover-background: (color: ('primary', 600)),
+            focus-visible-background: (color: ('primary', 600)),
+            foreground: (contrast-color: ('primary', 500)),
+            hover-foreground: (contrast-color: ('primary', 600)),
+            focus-foreground: (contrast-color: ('primary', 600)),
+            focus-hover-foreground: (contrast-color: ('primary', 600)),
+            focus-visible-foreground: (contrast-color: ('primary', 600)),
+            active-foreground: (contrast-color: ('primary', 700)),
+        ),
+        fab: (border-color: $_ink-line),
+    ),
+    card: (outline-color: $_ink-line),
+    navbar: (background: (color: ('warn', 500)), text-color: (contrast-color: ('warn', 500)), border-color: $_ink-line),
+    chip: (border-color: $_ink-line, background: (color: ('secondary', 100))),
+    avatar: (background: (color: ('secondary', 500)), color: (contrast-color: ('secondary', 500))),
+    badge: (border-color: $_ink-line),
+    input-group: (border-color: $_ink-line, hover-border-color: $_ink-line, focused-border-color: (color: ('primary', 500))),
+    tabs: (indicator-color: (color: ('primary', 500)), border-color: $_ink-line),
+    list: (border-color: $_ink-line, border-width: 2px),
+    linear-bar: (track-color: (color: ('gray', 100)), fill-color-default: (color: ('primary', 500))),
+);
+
+// Variant-specific tweaks are merged on top of the shared overrides.
+$light-brutalism-schema: design-schema(
+    schemas.$light-material-schema,
+    'brutalism',
+    map.deep-merge($_overrides, (card: (background: (color: ('warn', 50)))))
+);
+$dark-brutalism-schema: design-schema(
+    schemas.$dark-material-schema,
+    'brutalism',
+    map.deep-merge($_overrides, (chip: (background: (color: ('secondary', 700)))))
+);

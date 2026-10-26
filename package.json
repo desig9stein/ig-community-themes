@@ -1,0 +1,49 @@
+{
+  "name": "igniteui-community-themes",
+  "version": "0.1.0",
+  "description": "Community-maintained design systems for Ignite UI (Angular, Web Components, Blazor). Not supported by Infragistics.",
+  "license": "MIT",
+  "type": "module",
+  "private": false,
+  "files": [
+    "designs",
+    "!designs/_template",
+    "lib",
+    "dist",
+    "schema"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./lib": {
+      "sass": "./lib/_index.scss"
+    },
+    "./*.css": "./dist/*.css",
+    "./*": {
+      "sass": "./designs/*/_index.scss"
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "validate": "node scripts/validate.mjs",
+    "new": "node scripts/new-design.mjs",
+    "tokens": "node scripts/tokens.mjs",
+    "dev": "npm run build && vite",
+    "build:site": "npm run build && vite build"
+  },
+  "devDependencies": {
+    "igniteui-theming": "^30.0.0",
+    "igniteui-webcomponents": "^7.4.1",
+    "sass": "^1.106.1",
+    "vite": "^8.3.5"
+  },
+  "peerDependencies": {
+    "igniteui-theming": ">=30.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/desig9stein/ig-community-themes.git"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

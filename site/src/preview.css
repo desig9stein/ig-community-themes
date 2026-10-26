@@ -1,0 +1,24 @@
+.dash {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 16px;
+  margin-bottom: 32px;
+  border-radius: 12px;
+  background: var(--ig-surface-500);
+  color: var(--ig-gray-900);
+  font-family: var(--ig-font-family);
+}
+.dash .span-all { grid-column: 1 / -1; }
+.dash .span-2 { grid-column: span 2; }
+.dash h2, .dash h3, .dash h4 { margin: 0; }
+.dash-title { font-size: 20px; }
+.kpi-value { font-size: 36px; font-weight: 700; margin-bottom: 8px; }
+.form { display: flex; flex-direction: column; gap: 12px; }
+.showcase { display: flex; flex-direction: column; gap: 16px; }
+.showcase .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+igc-list { max-height: 320px; }
+@media (max-width: 900px) {
+  .dash { grid-template-columns: 1fr; }
+  .dash .span-2 { grid-column: auto; }
+}

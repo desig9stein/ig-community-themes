@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Design Preview</title>
+    <link rel="stylesheet" href="./src/site.css" />
+    <link rel="stylesheet" href="./src/preview.css" />
+    <!-- Order matters: WC base theme first, then the community design on top. -->
+    <link id="base-theme" rel="stylesheet" />
+    <link id="design-theme" rel="stylesheet" />
+  </head>
+  <body class="site">
+    <header class="site-header">
+      <h1><a href="./">IG Community Themes</a></h1>
+      <label>Design <select id="design"></select></label>
+      <label>Variant <select id="variant"></select></label>
+      <label><input id="compare" type="checkbox" /> Show base only</label>
+      <span class="spacer"></span>
+      <span id="meta" class="meta"></span>
+    </header>
+
+    <main class="site-main">
+      <section class="dash">
+        <igc-navbar class="span-all">
+          <h2 class="dash-title">Weather</h2>
+          <igc-select id="city" slot="end" outlined></igc-select>
+        </igc-navbar>
+
+        <igc-card class="kpi"><igc-card-header><h3 slot="title">Temperature</h3><span slot="subtitle" id="updated">…</span></igc-card-header><igc-card-content><div class="kpi-value" id="temp">–</div></igc-card-content></igc-card>
+        <igc-card class="kpi"><igc-card-header><h3 slot="title">Humidity</h3></igc-card-header><igc-card-content><div class="kpi-value" id="humidity">–</div><igc-linear-progress id="humidity-bar" hide-label></igc-linear-progress></igc-card-content></igc-card>
+        <igc-card class="kpi"><igc-card-header><h3 slot="title">Wind</h3></igc-card-header><igc-card-content><div class="kpi-value" id="wind">–</div><igc-chip id="condition"></igc-chip></igc-card-content></igc-card>
+
+        <igc-card class="span-2">
+          <igc-card-header><h3 slot="title">Forecast</h3></igc-card-header>
+          <igc-card-content>
+            <igc-tabs>
+              <igc-tab label="Next hours"><igc-list id="hourly"></igc-list></igc-tab>
+              <igc-tab label="7 days"><igc-list id="daily"></igc-list></igc-tab>
+            </igc-tabs>
+          </igc-card-content>
+        </igc-card>
+
+        <igc-card>
+          <igc-card-header><h3 slot="title">Plan a trip</h3><span slot="subtitle">Form controls</span></igc-card-header>
+          <igc-card-content class="form">
+            <igc-input label="Trip name" placeholder="Weekend in the mountains"></igc-input>
+            <igc-date-picker label="Date"></igc-date-picker>
+            <igc-switch checked>Rain alerts</igc-switch>
+            <igc-checkbox>Share with friends</igc-checkbox>
+            <igc-radio-group alignment="horizontal">
+              <igc-radio name="unit" value="c" checked>°C</igc-radio>
+              <igc-radio name="unit" value="f">°F</igc-radio>
+            </igc-radio-group>
+            <igc-slider value="40" label="Max wind"></igc-slider>
+          </igc-card-content>
+          <igc-card-actions>
+            <igc-button slot="start" variant="contained">Save</igc-button>
+            <igc-button slot="start" variant="outlined">Cancel</igc-button>
+            <igc-button slot="end" variant="flat">Help</igc-button>
+          </igc-card-actions>
+        </igc-card>
+
+        <igc-card class="span-2">
+          <igc-card-header><h3 slot="title">Components</h3><span slot="subtitle">States and variants</span></igc-card-header>
+          <igc-card-content class="showcase">
+            <div class="row">
+              <igc-button variant="contained">Contained</igc-button>
+              <igc-button variant="outlined">Outlined</igc-button>
+              <igc-button variant="flat">Flat</igc-button>
+              <igc-button variant="fab">+</igc-button>
+              <igc-button variant="contained" disabled>Disabled</igc-button>
+            </div>
+            <div class="row">
+              <igc-chip>Default</igc-chip>
+              <igc-chip selectable selected>Selected</igc-chip>
+              <igc-chip removable>Removable</igc-chip>
+              <igc-badge>4</igc-badge>
+              <igc-badge variant="success">ok</igc-badge>
+              <igc-badge variant="danger">!</igc-badge>
+              <igc-avatar initials="AB"></igc-avatar>
+              <igc-avatar initials="IG" shape="rounded"></igc-avatar>
+            </div>
+            <div class="row">
+              <igc-button-group selection="single">
+                <igc-toggle-button value="d" selected>Day</igc-toggle-button>
+                <igc-toggle-button value="w">Week</igc-toggle-button>
+                <igc-toggle-button value="m">Month</igc-toggle-button>
+              </igc-button-group>
+              <igc-rating value="3.5" step="0.5"></igc-rating>
+              <igc-circular-progress value="65"></igc-circular-progress>
+            </div>
+            <igc-linear-progress value="72" variant="success"></igc-linear-progress>
+            <igc-expansion-panel>
+              <h4 slot="title">What does this design change?</h4>
+              <p id="explain"></p>
+            </igc-expansion-panel>
+          </igc-card-content>
+        </igc-card>
+
+        <igc-card>
+          <igc-card-header><h3 slot="title">Calendar</h3></igc-card-header>
+          <igc-card-content><igc-calendar></igc-calendar></igc-card-content>
+        </igc-card>
+      </section>
+
+      <h2>Use this design</h2>
+      <div id="usage"></div>
+    </main>
+    <script type="module" src="./src/preview.js"></script>
+  </body>
+</html>

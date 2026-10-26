@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/desig9stein/ig-community-themes/schema/manifest.schema.json",
+  "title": "IG community design system manifest",
+  "type": "object",
+  "required": ["name", "slug", "description", "base", "variants", "maintainers", "authorType"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,39}$",
+      "not": { "enum": ["material", "bootstrap", "fluent", "indigo"] },
+      "description": "Must equal the folder name under designs/."
+    },
+    "description": { "type": "string", "maxLength": 200 },
+    "base": {
+      "enum": ["material", "bootstrap", "fluent", "indigo"],
+      "description": "Built-in design system that provides component structure."
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["light", "dark"] }
+    },
+    "maintainers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[A-Za-z0-9-]{1,39}$" },
+      "description": "GitHub usernames. They own designs/<slug>/ via CODEOWNERS."
+    },
+    "authorType": { "enum": ["human", "ai"] },
+    "tags": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 24 } },
+    "license": { "type": "string", "default": "MIT" },
+    "fonts": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^https://fonts\\.googleapis\\.com/" },
+      "description": "Google Fonts stylesheets the preview loads for this design."
+    }
+  }
+}
