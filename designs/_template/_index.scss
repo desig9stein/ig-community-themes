@@ -2,7 +2,7 @@
 // Conventions (the build relies on these names):
 //   $__SLUG__-<variant>-palette, $<variant>-__SLUG__-schema  for each variant in manifest.json
 //   $__SLUG__-typeface, $__SLUG__-type-scale, $__SLUG__-elevations, $__SLUG__-roundness
-// List valid components/tokens with: npm run tokens -- <component> --base __BASE__
+// Discover components and tokens with the igniteui-theming MCP: npm run mcp -- get_component_design_tokens component=<name>
 @use 'igniteui-theming' as *;
 @use 'igniteui-theming/sass/themes/schemas' as schemas;
 @use 'igniteui-theming/sass/typography/presets' as type;
@@ -17,11 +17,14 @@ $__SLUG__-type-scale: type.$__BASE__-type-scale;
 $__SLUG__-elevations: elevation.$material-elevations;
 $__SLUG__-roundness: null; // 0..1 scales every component radius, null keeps the base
 
-// Token overrides shared by both variants. Palette references like (color: ('gray', 900))
-// resolve against the active palette, so one map usually serves light and dark.
-$_overrides: (
-    // button: (contained: (border-radius: 0)),
+// Component themes: MCP component name -> theme-function arguments. Start with the primary tokens that
+// `npm run mcp -- get_component_design_tokens component=<name>` lists; every other state is derived.
+// Palette references like color(null, 'primary', 500) resolve against the active palette, so one map
+// usually serves light and dark (make it a function of the variant when it can't).
+$_themes: (
+    // contained-button: (background: color(null, 'primary', 500)),
+    // tabs: (item-background: color(null, 'surface'), item-active-color: color(null, 'primary', 500)),
 );
 
-$light-__SLUG__-schema: design-schema(schemas.$light-__BASE__-schema, '__SLUG__', $_overrides);
-$dark-__SLUG__-schema: design-schema(schemas.$dark-__BASE__-schema, '__SLUG__', $_overrides);
+$light-__SLUG__-schema: design-schema(schemas.$light-__BASE__-schema, '__SLUG__', $_themes);
+$dark-__SLUG__-schema: design-schema(schemas.$dark-__BASE__-schema, '__SLUG__', $_themes);

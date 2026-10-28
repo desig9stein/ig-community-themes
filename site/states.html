@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Component States</title>
+    <link rel="stylesheet" href="./src/site.css" />
+    <link rel="stylesheet" href="./src/states.css" />
+    <link id="base-theme" rel="stylesheet" />
+    <link id="design-theme" rel="stylesheet" />
+  </head>
+  <body class="site">
+    <header class="site-header">
+      <h1><a href="./">IG Community Themes</a></h1>
+      <label>Design <select id="design"></select></label>
+      <label>Variant <select id="variant"></select></label>
+      <label><input id="compare" type="checkbox" /> Show base only</label>
+      <span class="spacer"></span>
+      <a id="to-preview" href="./preview.html">Dashboard</a>
+      <a id="to-angular" href="./angular/">Angular grid</a>
+    </header>
+    <main class="site-main">
+      <p class="lead">
+        Every component in every state. The first instance in each row is the live one: hover, focus and press it
+        (the review script does this automatically). The others are fixed states.
+      </p>
+      <div class="states" id="states"></div>
+    </main>
+    <script type="module" src="./src/states.js"></script>
+  </body>
+</html>

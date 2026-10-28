@@ -10,7 +10,11 @@ export default defineConfig({
     outDir: resolve('_site'),
     emptyOutDir: true,
     rollupOptions: {
-      input: { index: resolve('site/index.html'), preview: resolve('site/preview.html') },
+      input: {
+        index: resolve('site/index.html'),
+        preview: resolve('site/preview.html'),
+        states: resolve('site/states.html'),
+      },
     },
   },
 });

@@ -1,3 +1,11 @@
 node_modules/
 dist/
 _site/
+
+# Angular preview
+apps/angular/node_modules/
+apps/angular/dist/
+apps/angular/.angular/
+apps/angular/src/themes/
+apps/angular/src/app/designs.generated.ts
+review/

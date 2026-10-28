@@ -26,11 +26,15 @@
     "build": "node scripts/build.mjs",
     "validate": "node scripts/validate.mjs",
     "new": "node scripts/new-design.mjs",
-    "tokens": "node scripts/tokens.mjs",
     "dev": "npm run build && vite",
-    "build:site": "npm run build && vite build"
+    "build:site": "npm run build && vite build && npm run build:angular",
+    "mcp": "node scripts/mcp.mjs",
+    "build:angular": "node scripts/angular-themes.mjs && npm --prefix apps/angular run build -- --base-href ./",
+    "review": "node scripts/review.mjs"
   },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "axe-core": "^4.14.0",
     "igniteui-theming": "^30.0.0",
     "igniteui-webcomponents": "^7.4.1",
     "sass": "^1.106.1",

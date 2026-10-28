@@ -2,76 +2,123 @@
 @use 'sass:list';
 @use 'sass:map';
 @use 'sass:meta';
-@use 'igniteui-theming' as *;
+@use 'igniteui-theming' as theming;
 
-/// Returns true when a schema node is a component theme (has `_meta.name`).
+/// True when a schema node is a component theme (it has `_meta.name`).
 @function _is-component($node) {
     @return meta.type-of($node) == 'map' and map.has-key($node, '_meta') and map.get($node, '_meta', 'name') != null;
 }
 
-@function _merge-component($base, $overrides, $path) {
-    @each $token, $value in $overrides {
-        @if not map.has-key($base, $token) {
-            @error 'Unknown token "#{$token}" for "#{$path}". Run `npm run tokens -- #{$path}` to list valid tokens.';
+/// Theme functions return digested values (e.g. `resting-elevation: var(--ig-elevation-2)`), but some
+/// framework styles read raw schema values at build time (e.g. `elevation > 0` in Angular). Where the theme
+/// left a value at its default, restore the base's raw number / typography / size map.
+@function _keep-raw($base-leaf, $theme, $args) {
+    $digested: theming.digest-schema($base-leaf);
+
+    @each $key, $value in $base-leaf {
+        $raw-kind: meta.type-of($value) == 'number' or $key == 'typography' or $key == 'size';
+
+        @if $raw-kind and not map.has-key($args, $key) and map.get($theme, $key) == map.get($digested, $key) {
+            $theme: map.set($theme, $key, $value);
         }
     }
 
-    @return map.merge($base, $overrides);
+    @return $theme;
 }
 
-/// Builds a design-system schema from a built-in base schema and per-component token overrides.
-/// Tokens are replaced wholesale (no deep merge of token values).
-/// Unknown components or tokens fail the build, so typos never ship silently.
-/// @param {Map} $base - A built-in schema, e.g. `$light-material-schema`.
-/// @param {String} $name - The design system slug, e.g. 'brutalism'.
-/// @param {Map} $overrides - `(button: (flat: (border-radius: 0)), avatar: (background: ...))`.
-@function design-schema($base, $name, $overrides: ()) {
-    $result: $base;
+/// True when any leaf under `$node` has `_meta.name == $name`.
+@function _has($node, $name) {
+    @if _is-component($node) {
+        @return map.get($node, '_meta', 'name') == $name;
+    }
 
-    @each $component, $value in $overrides {
-        @if not map.has-key($base, $component) {
-            @error 'Unknown component "#{$component}". It does not exist in the base schema.';
-        }
-
-        $node: map.get($base, $component);
-
-        @if _is-component($node) {
-            $result: map.set($result, $component, _merge-component($node, $value, $component));
-        } @else {
-            @each $sub, $sub-value in $value {
-                @if not map.has-key($node, $sub) {
-                    @error 'Unknown variant "#{$sub}" for "#{$component}". Valid: #{map.keys($node)}.';
-                }
-
-                $node: map.set($node, $sub, _merge-component(map.get($node, $sub), $sub-value, '#{$component}.#{$sub}'));
-            }
-
-            $result: map.set($result, $component, $node);
+    @each $key, $child in $node {
+        @if $key != '_meta' and meta.type-of($child) == 'map' and _has($child, $name) {
+            @return true;
         }
     }
 
-    @return map.set($result, '_meta', map.merge(map.get($base, '_meta') or (), (design: $name, overridden: map.keys($overrides))));
+    @return false;
+}
+
+/// Replaces every schema leaf whose `_meta.name` is `$name` with `$theme`. Some components appear more than
+/// once (the calendar also lives inside the date pickers), and all copies must agree.
+@function _replace($node, $name, $theme, $args) {
+    @if _is-component($node) {
+        @return if(map.get($node, '_meta', 'name') == $name, _keep-raw($node, $theme, $args), $node);
+    }
+
+    @each $key, $child in $node {
+        @if $key != '_meta' and meta.type-of($child) == 'map' and _has($child, $name) {
+            $node: map.set($node, $key, _replace($child, $name, $theme, $args));
+        }
+    }
+
+    @return $node;
+}
+
+/// Runs a component's theme function (e.g. `tabs-theme`) against `$schema` with `$args` as keyword arguments.
+/// The theme function derives every state (hover, focus, active, disabled) and every contrast color from the
+/// primary tokens you pass, exactly like `create_component_theme` in the igniteui-theming MCP.
+@function component-theme($component, $schema, $args: ()) {
+    $fn-name: '#{$component}-theme';
+
+    @if not meta.function-exists($fn-name, $module: 'theming') {
+        @error 'Unknown component "#{$component}". Run `npm run mcp -- get_component_design_tokens component=<name>`.';
+    }
+
+    @return meta.call(meta.get-function($fn-name, $module: 'theming'), $schema: $schema, $args...);
+}
+
+/// Builds a design-system schema from a built-in base schema.
+/// `$themes` maps MCP component names (`contained-button`, `tabs`, `grid`, ...) to theme-function arguments.
+/// Pass primary tokens first; everything else is derived. Unknown components or arguments fail the build.
+/// @param {Map} $base - A built-in schema, e.g. `$light-material-schema`.
+/// @param {String} $name - The design system slug.
+/// @param {Map} $themes - e.g. `(tabs: (item-background: theming.color('surface', 500)))`.
+@function design-schema($base, $name, $themes: ()) {
+    $result: $base;
+    $touched: ();
+
+    @each $component, $args in $themes {
+        $theme: component-theme($component, $base, $args);
+        $leaf: map.get($theme, '_meta', 'name');
+        @if not _has($result, $leaf) {
+            @error 'Component "#{$component}" (#{$leaf}) has no entry in the base schema.';
+        }
+
+        $result: _replace($result, $leaf, $theme, $args);
+        $touched: list.append($touched, $leaf);
+    }
+
+    @return map.set($result, '_meta', map.merge(map.get($base, '_meta') or (), (design: $name, overridden: $touched)));
 }
 
 /// Emits global `--ig-<component>-<token>` custom properties for the components a design overrides
-/// (or for every component when `$all` is true). Every Ignite UI component (Angular, Web Components,
-/// Blazor) reads these at runtime, so this is all the CSS a design system needs on top of its base.
+/// (or every component when `$all` is true). Every Ignite UI component (Angular, Web Components, Blazor)
+/// reads these at runtime, so this is all the CSS a design system needs on top of its base.
+$_emitted: ();
+
 @mixin design-tokens($schema, $all: false) {
     $only: map.get($schema, '_meta', 'overridden');
+    $_emitted: () !global;
 
     @each $key, $node in map.remove($schema, '_meta') {
-        @if $all or not $only or list.index($only, $key) {
-            @include _emit($node);
-        }
+        @include _emit($node, if($all, null, $only));
     }
 }
 
-@mixin _emit($node) {
+@mixin _emit($node, $only) {
     @if _is-component($node) {
-        @include tokens(digest-schema($node), $mode: 'global');
+        $name: map.get($node, '_meta', 'name');
+
+        @if (not $only or list.index($only, $name)) and not list.index($_emitted, $name) {
+            $_emitted: list.append($_emitted, $name) !global;
+            @include theming.tokens(theming.digest-schema($node), $mode: 'global');
+        }
     } @else if meta.type-of($node) == 'map' {
         @each $sub, $sub-node in map.remove($node, '_meta') {
-            @include _emit($sub-node);
+            @include _emit($sub-node, $only);
         }
     }
 }

@@ -18,6 +18,8 @@
       <label><input id="compare" type="checkbox" /> Show base only</label>
       <span class="spacer"></span>
       <span id="meta" class="meta"></span>
+      <a id="to-states" href="./states.html">States</a>
+      <a id="to-angular" href="./angular/">Angular grid</a>
     </header>
 
     <main class="site-main">
@@ -27,11 +29,11 @@
           <igc-select id="city" slot="end" outlined></igc-select>
         </igc-navbar>
 
-        <igc-card class="kpi"><igc-card-header><h3 slot="title">Temperature</h3><span slot="subtitle" id="updated">…</span></igc-card-header><igc-card-content><div class="kpi-value" id="temp">–</div></igc-card-content></igc-card>
-        <igc-card class="kpi"><igc-card-header><h3 slot="title">Humidity</h3></igc-card-header><igc-card-content><div class="kpi-value" id="humidity">–</div><igc-linear-progress id="humidity-bar" hide-label></igc-linear-progress></igc-card-content></igc-card>
-        <igc-card class="kpi"><igc-card-header><h3 slot="title">Wind</h3></igc-card-header><igc-card-content><div class="kpi-value" id="wind">–</div><igc-chip id="condition"></igc-chip></igc-card-content></igc-card>
+        <igc-card class="kpi" elevated><igc-card-header><h3 slot="title">Temperature</h3><span slot="subtitle" id="updated">…</span></igc-card-header><igc-card-content><div class="kpi-value" id="temp">–</div></igc-card-content></igc-card>
+        <igc-card class="kpi" elevated><igc-card-header><h3 slot="title">Humidity</h3></igc-card-header><igc-card-content><div class="kpi-value" id="humidity">–</div><igc-linear-progress id="humidity-bar" hide-label></igc-linear-progress></igc-card-content></igc-card>
+        <igc-card class="kpi" elevated><igc-card-header><h3 slot="title">Wind</h3></igc-card-header><igc-card-content><div class="kpi-value" id="wind">–</div><igc-chip id="condition"></igc-chip></igc-card-content></igc-card>
 
-        <igc-card class="span-2">
+        <igc-card class="span-2" elevated>
           <igc-card-header><h3 slot="title">Forecast</h3></igc-card-header>
           <igc-card-content>
             <igc-tabs>
@@ -41,7 +43,7 @@
           </igc-card-content>
         </igc-card>
 
-        <igc-card>
+        <igc-card elevated>
           <igc-card-header><h3 slot="title">Plan a trip</h3><span slot="subtitle">Form controls</span></igc-card-header>
           <igc-card-content class="form">
             <igc-input label="Trip name" placeholder="Weekend in the mountains"></igc-input>
@@ -61,7 +63,7 @@
           </igc-card-actions>
         </igc-card>
 
-        <igc-card class="span-2">
+        <igc-card class="span-2" elevated>
           <igc-card-header><h3 slot="title">Components</h3><span slot="subtitle">States and variants</span></igc-card-header>
           <igc-card-content class="showcase">
             <div class="row">
@@ -98,7 +100,7 @@
           </igc-card-content>
         </igc-card>
 
-        <igc-card>
+        <igc-card elevated>
           <igc-card-header><h3 slot="title">Calendar</h3></igc-card-header>
           <igc-card-content><igc-calendar></igc-calendar></igc-card-content>
         </igc-card>

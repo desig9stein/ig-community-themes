@@ -1,6 +1,6 @@
-// Validates designs: manifest, compilation (unknown components/tokens fail here), palette contrast, parts.css.
+// Validates designs: manifest, compilation (unknown components/arguments fail here) and palette contrast.
 // Usage: npm run validate [-- <slug> ...]
-import { listDesigns, readManifest, checkManifest, compile, checkPalette, checkParts } from './design.mjs';
+import { listDesigns, readManifest, checkManifest, compile, checkPalette } from './design.mjs';
 
 const slugs = process.argv.slice(2).length ? process.argv.slice(2) : listDesigns();
 let failed = 0;
@@ -19,9 +19,8 @@ for (const slug of slugs) {
   if (!errors.length) {
     for (const variant of manifest.variants) {
       try {
-        const { parts, warnings } = compile(slug, manifest, variant);
+        const { warnings } = compile(slug, manifest, variant);
         errors.push(...checkPalette(slug, variant));
-        if (variant === manifest.variants[0]) errors.push(...checkParts(parts));
         warnings.forEach((w) => console.warn(`  ! ${slug}/${variant}: ${w.split('\n')[0]}`));
       } catch (e) {
         errors.push(`${variant}: ${e.message.split('\n')[0]}`);

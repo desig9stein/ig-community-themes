@@ -12,12 +12,25 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/angular/package-lock.json
       - run: npm ci
+      - run: npm ci --prefix apps/angular
       - name: Validate designs
         run: npm run validate
-      - name: Build designs and site
+      - name: Build designs, WC site and Angular preview
         run: npm run build:site
       - name: CODEOWNERS is up to date
         run: git diff --exit-code .github/CODEOWNERS || (echo "Run npm run build and commit .github/CODEOWNERS" && exit 1)
+      - name: Install Playwright Chromium
+        run: npm i --no-save playwright && npx playwright install --with-deps chromium
+      - name: Visual + contrast review
+        run: npm run review -- --strict
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: review
+          path: review/

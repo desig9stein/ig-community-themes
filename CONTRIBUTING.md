@@ -2,21 +2,22 @@
 
 1. **Scaffold:** `npm run new -- <slug> --base <material|bootstrap|fluent|indigo> --maintainer <github-user>`.
 2. **Design** in `designs/<slug>/_index.scss`:
-   - `palette()` per variant. Pass `$generator: 'legacy'` if you need the exact seed color at shade 500.
+   - `palette()` per variant. Pass `$generator: 'legacy'` to keep the exact seed color at shade 500.
    - `$<slug>-typeface`, `$<slug>-type-scale`, `$<slug>-elevations`, `$<slug>-roundness`.
-   - Token overrides via `design-schema($base-schema, '<slug>', $overrides)`. Reference palette colors as
-     `(color: ('primary', 500))` or `(contrast-color: ('primary', 500))` so one map works for light and dark.
-     Use `map.deep-merge` to add variant-only tweaks (see `designs/brutalism`).
-   - Find components and tokens with `npm run tokens -- [component[.variant]] --base <base> --variant <light|dark>`.
-3. **Fill in** `manifest.json` (validated by `schema/manifest.schema.json`).
-4. **Preview:** `npm run dev`, then open `/preview.html?design=<slug>`. Use "Show base only" to compare.
-5. **Validate:** `npm run validate -- <slug>`. It checks:
-   - the manifest;
-   - that the Sass compiles (unknown components or tokens are errors);
-   - contrast: gray 900 on surface ≥ 4.5 and primary 500 on surface ≥ 3;
-   - that the surface matches the variant;
-   - `parts.css` safety.
-6. **Build** with `npm run build`, which regenerates `.github/CODEOWNERS`. Commit everything and open a PR.
+   - `$_themes`: MCP component names → theme-function arguments, passed to `design-schema()`. Ask the igniteui-theming
+     MCP which tokens are primary: `npm run mcp -- get_component_design_tokens component=<name>`. Preview the derived
+     result with `npm run mcp -- create_component_theme …`.
+3. **Fill in** `manifest.json`. It's validated by `schema/manifest.schema.json`.
+4. **Validate:** `npm run validate -- <slug>`. This checks the manifest, that the Sass compiles (unknown
+   components or arguments are errors), palette contrast, and that the surface matches the variant.
+5. **Review:**
+   - `npm run build:site && npm run review -- <slug>`, then open `review/<slug>/index.html`. It puts every state of
+     every component (WC + the Angular grid with its menus and dialogs) next to the base theme and lists contrast
+     violations the base doesn't have.
+   - Aim for zero.
+6. **Build** with `npm run build`, which regenerates `.github/CODEOWNERS`. Commit and open a PR.
+
+The Angular preview needs Node ≥ 22.22.3 (Angular CLI 22).
 
 ## Ownership
 
@@ -29,8 +30,8 @@
 
 | Export | Example |
 | --- | --- |
-| `$<slug>-<variant>-palette` | `$brutalism-light-palette` |
-| `$<variant>-<slug>-schema` | `$light-brutalism-schema` |
-| `$<slug>-typeface`, `$<slug>-type-scale` | `$brutalism-typeface` |
+| `$<slug>-<variant>-palette` | `$neo-brutalism-light-palette` |
+| `$<variant>-<slug>-schema` | `$light-neo-brutalism-schema` |
+| `$<slug>-typeface`, `$<slug>-type-scale` | `$neo-brutalism-typeface` |
 | `$<slug>-elevations` | map of levels 0..24 to box-shadow |
 | `$<slug>-roundness` | `0`..`1`, or `null` to keep the base |

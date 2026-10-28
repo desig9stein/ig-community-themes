@@ -2,11 +2,12 @@
 
 - Slug: `designs/<slug>/`
 - Base: material | bootstrap | fluent | indigo
-- Authored by: human | AI (which agent/model, if any)
+- Authored by: human | AI (which agent, if any)
 
 ## Checklist
 
 - [ ] `npm run validate -- <slug>` passes
-- [ ] Previewed light and dark with `npm run dev`
+- [ ] `npm run build:site && npm run review -- <slug>` reports 0 new contrast issues
+- [ ] I checked the review sheets (every state, light and dark, WC and Angular grid)
 - [ ] I'm listed in `maintainers` and will maintain this design
-- [ ] Screenshot attached
+- [ ] Review sheets attached

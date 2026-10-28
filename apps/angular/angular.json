@@ -1,0 +1,176 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm"
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "angular-preview": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "inlineTemplate": true,
+          "inlineStyle": true,
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.scss",
+              {
+                "input": "src/themes/design-neo-brutalism-light.scss",
+                "bundleName": "design-neo-brutalism-light",
+                "inject": false
+              },
+              {
+                "input": "src/themes/design-neo-brutalism-dark.scss",
+                "bundleName": "design-neo-brutalism-dark",
+                "inject": false
+              },
+              {
+                "input": "src/themes/design-nord-light.scss",
+                "bundleName": "design-nord-light",
+                "inject": false
+              },
+              {
+                "input": "src/themes/design-nord-dark.scss",
+                "bundleName": "design-nord-dark",
+                "inject": false
+              },
+              {
+                "input": "src/themes/base-material-light.scss",
+                "bundleName": "base-material-light",
+                "inject": false
+              },
+              {
+                "input": "src/themes/base-material-dark.scss",
+                "bundleName": "base-material-dark",
+                "inject": false
+              },
+              {
+                "input": "src/themes/base-bootstrap-light.scss",
+                "bundleName": "base-bootstrap-light",
+                "inject": false
+              },
+              {
+                "input": "src/themes/base-bootstrap-dark.scss",
+                "bundleName": "base-bootstrap-dark",
+                "inject": false
+              },
+              {
+                "input": "src/themes/base-fluent-light.scss",
+                "bundleName": "base-fluent-light",
+                "inject": false
+              },
+              {
+                "input": "src/themes/base-fluent-dark.scss",
+                "bundleName": "base-fluent-dark",
+                "inject": false
+              },
+              {
+                "input": "src/themes/base-indigo-light.scss",
+                "bundleName": "base-indigo-light",
+                "inject": false
+              },
+              {
+                "input": "src/themes/base-indigo-dark.scss",
+                "bundleName": "base-indigo-dark",
+                "inject": false
+              }
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ],
+              "sass": {
+                "silenceDeprecations": [
+                  "if-function",
+                  "color-functions",
+                  "global-builtin",
+                  "import"
+                ]
+              }
+            },
+            "outputPath": {
+              "base": "../../_site/angular",
+              "browser": ""
+            }
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "6MB",
+                  "maximumError": "10MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "16kB",
+                  "maximumError": "32kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "angular-preview:build:production"
+            },
+            "development": {
+              "buildTarget": "angular-preview:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
+  }
+}

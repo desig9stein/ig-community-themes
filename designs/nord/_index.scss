@@ -1,11 +1,14 @@
 // Nord — calm arctic palette with soft corners, built on indigo.
+// Polar Night surfaces, Snow Storm text, Frost accents, Aurora status colors (https://www.nordtheme.com).
+// Components are themed through their igniteui-theming theme functions, so all states derive from the
+// few primary tokens below.
 @use 'igniteui-theming' as *;
 @use 'igniteui-theming/sass/themes/schemas' as schemas;
 @use 'igniteui-theming/sass/typography/presets' as type;
 @use 'igniteui-theming/sass/elevations/presets' as elevation;
 @use '../../lib' as *;
 
-$nord-light-palette: palette($primary: #5e81ac, $secondary: #88c0d0, $surface: #eceff4, $gray: #4c566a, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #81a1c1, $variant: light, $generator: 'legacy');
+$nord-light-palette: palette($primary: #5e81ac, $secondary: #88c0d0, $surface: #eceff4, $gray: #3b4252, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #81a1c1, $variant: light, $generator: 'legacy');
 $nord-dark-palette: palette($primary: #88c0d0, $secondary: #81a1c1, $surface: #2e3440, $gray: #d8dee9, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #5e81ac, $variant: dark, $generator: 'legacy');
 
 $nord-typeface: "'Inter', sans-serif";
@@ -13,10 +16,69 @@ $nord-type-scale: type.$indigo-type-scale;
 $nord-elevations: elevation.$indigo-elevations;
 $nord-roundness: 0.8;
 
-$_overrides: (
-    navbar: (background: (color: ('primary', 500)), text-color: (contrast-color: ('primary', 500))),
-    avatar: (background: (color: ('secondary', 300))),
-);
+$frost: color(null, 'primary', 500);
+$frost-soft: color(null, 'secondary', 200);
+$panel: color(null, 'gray', 50);
+$canvas: color(null, 'surface');
 
-$light-nord-schema: design-schema(schemas.$light-indigo-schema, 'nord', $_overrides);
-$dark-nord-schema: design-schema(schemas.$dark-indigo-schema, 'nord', $_overrides);
+// Frost used as text must clear 4.5:1: darker in light, lighter in dark.
+@function _frost-text($variant) {
+    @return if($variant == light, color(null, 'primary', 700), color(null, 'primary', 300));
+}
+
+// Grid accents sit on the grid's tinted summary/header areas, so they need one more step of contrast.
+@function _frost-strong($variant) {
+    @return if($variant == light, color(null, 'primary', 800), color(null, 'primary', 200));
+}
+
+@function _themes($variant) {
+    $frost-text: _frost-text($variant);
+    $frost-strong: _frost-strong($variant);
+    $text: color(null, 'gray', 900);
+    $text-muted: color(null, 'gray', 800);
+
+    @return (
+        contained-button: (background: $frost),
+        outlined-button: (foreground: $frost-text),
+        flat-button: (foreground: $frost-text),
+        flat-icon-button: (foreground: $frost-text),
+        outlined-icon-button: (foreground: $frost-text),
+        contained-icon-button: (
+            background: $frost-text,
+            foreground: contrast-color(null, 'primary', if($variant == light, 700, 300)),
+        ),
+        fab-button: (background: color(null, 'secondary', 500)),
+        button-group: (item-background: $panel, item-selected-background: $frost),
+        chip: (background: $frost-soft, selected-background: $frost),
+        badge: (background-color: $frost),
+        avatar: (background: $frost),
+        input-group: (
+            box-background: $panel,
+            focused-border-color: $frost,
+            idle-secondary-color: $text-muted,
+        ),
+        checkbox: (fill-color: $frost, label-color: $text),
+        radio: (fill-color: $frost, label-color: $text),
+        switch: (track-on-color: $frost),
+        slider: (track-color: $frost, thumb-color: $frost),
+        navbar: (background: $panel),
+        card: (background: $panel),
+        list: (background: $panel, header-text-color: $frost-text),
+        dialog: (background: $panel),
+        tabs: (item-background: $panel, item-active-color: $frost-text, indicator-color: $frost),
+        calendar: (
+            header-background: $frost,
+            content-background: $panel,
+            date-current-background: $panel,
+            date-current-border-color: $frost,
+        ),
+        expansion-panel: (header-background: $panel, body-background: $panel),
+        drop-down: (background-color: $panel, selected-item-background: $frost-soft),
+        grid: (background: $panel, foreground: color(null, 'gray', 900), accent-color: $frost-strong),
+        excel-filtering: (background: $panel, foreground: color(null, 'gray', 900), accent-color: $frost-text),
+        query-builder: (background: $panel, header-background: $canvas, subquery-header-background: $canvas, subquery-border-color: color(null, 'gray', 300)),
+    );
+}
+
+$light-nord-schema: design-schema(schemas.$light-indigo-schema, 'nord', _themes(light));
+$dark-nord-schema: design-schema(schemas.$dark-indigo-schema, 'nord', _themes(dark));

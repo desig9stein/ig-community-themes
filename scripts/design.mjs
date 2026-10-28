@@ -1,5 +1,5 @@
 // Shared helpers: discover designs, check manifests, compile CSS.
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as sass from 'sass';
 
@@ -84,9 +84,7 @@ export function compile(slug, m, variant) {
       warn: (msg, { deprecation }) => deprecation || /repetitive deprecation/.test(msg) || warnings.push(msg),
     },
   });
-  const partsFile = join(DESIGNS_DIR, slug, 'parts.css');
-  const parts = existsSync(partsFile) ? readFileSync(partsFile, 'utf8') : '';
-  return { css: css + (parts ? `\n${parts}` : ''), parts, warnings };
+  return { css, warnings };
 }
 
 /** Reads the seed colors of a compiled palette as [r, g, b] (0-255). */
@@ -142,25 +140,5 @@ export function checkPalette(slug, variant) {
   const primary = contrast(c['primary 500'], c['surface 500']);
   if (primary < 3) errors.push(`${variant}: primary 500 on surface has contrast ${primary.toFixed(2)}, needs >= 3`);
 
-  return errors;
-}
-
-/** parts.css may only target Ignite UI web component parts and may not load anything. */
-export function checkParts(parts) {
-  const errors = [];
-  if (/@import|url\s*\(|expression\s*\(|javascript:/i.test(parts)) {
-    errors.push('parts.css: @import, url() and expressions are not allowed');
-  }
-  const selectors = parts
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\{[^}]*\}/g, '\n')
-    .split(/[\n,]/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-  for (const s of selectors) {
-    if (!/^igc-[a-z-]+(\[[^\]]+\])*(::part\([a-z0-9 -]+\))(:[a-z-]+(\([^)]*\))?)*$/.test(s)) {
-      errors.push(`parts.css: selector "${s}" must look like igc-<component>::part(<name>)`);
-    }
-  }
   return errors;
 }

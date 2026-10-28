@@ -1,0 +1,253 @@
+// Neo-Brutalism — a tiered neo-brutalist design system for Ignite UI.
+//
+// Macro framing (cards, dialogs, calendar, grid shell, toolbars): ink outlines, hard 4-8px offset shadows,
+// flat saturated header blocks. Micro data (grid cells, list rows, date nodes): thin lines, neutral fills,
+// solid accent fills for selection. Interactive elements rest on a 4px shadow, lift to 6px on hover and
+// collapse to 0 when pressed. Accents are ~10% of the surface: pink = actions, lime = selection/headers,
+// cyan = info. Only theme tokens are used, so it works the same in Angular, Web Components and Blazor.
+//
+// Every component is themed through its igniteui-theming theme function (see `npm run mcp`), so hover,
+// focus, active, selected and disabled states and all text colors are derived for contrast.
+@use 'sass:map';
+@use 'igniteui-theming' as *;
+@use 'igniteui-theming/sass/themes/schemas' as schemas;
+@use 'igniteui-theming/sass/typography/presets' as type;
+@use '../../lib' as *;
+
+// ---- Foundations -------------------------------------------------------------------------------------
+
+$neo-brutalism-light-palette: palette(
+    $primary: #ff006e, // electric pink — actions
+    $secondary: #ccff00, // electric lime — selection, headers
+    $surface: #f4f4f0, // warm neutral canvas
+    $gray: #000, // structural ink
+    $info: #00d9ff,
+    $success: #00c853,
+    $warn: #ffb800,
+    $error: #ff3b30,
+    $variant: light,
+    $generator: 'legacy' // keep the seeds exact at shade 500
+);
+
+$neo-brutalism-dark-palette: palette(
+    $primary: #ff006e,
+    $secondary: #ccff00,
+    $surface: #121212,
+    $gray: #f5f5f5, // ink flips to off-white so outlines survive on dark
+    $info: #00d9ff,
+    $success: #2ee88f,
+    $warn: #ffc93c,
+    $error: #ff5a5f,
+    $variant: dark,
+    $generator: 'legacy'
+);
+
+$neo-brutalism-typeface: "'Space Grotesk', 'Arial', sans-serif";
+$neo-brutalism-type-scale: type.$material-type-scale;
+$neo-brutalism-roundness: 0;
+
+// Zero-blur offset shadows in the ink color. Small components use levels 1-3 (2px), interactive resting
+// state 4 (4px), hover 6 (6px), floating panels 8-11 (6px), large containers 12+ (8px).
+$_ink: var(--ig-gray-900);
+$neo-brutalism-elevations: ();
+
+@for $i from 0 through 24 {
+    $o: if($i == 0, 0, if($i < 4, 2px, if($i < 6, 4px, if($i < 12, 6px, 8px))));
+    $neo-brutalism-elevations: map.merge($neo-brutalism-elevations, ($i: if($i == 0, none, $o $o 0 0 $_ink)));
+}
+
+// ---- Roles -------------------------------------------------------------------------------------------
+
+// Structural ink: pure black lines in light, off-white lines in dark (dark canvases absorb black).
+@function ink($variant) {
+    @return if($variant == light, #000, #f5f5f5);
+}
+
+$paper: color(null, 'gray', 50); // card / panel fill: near-white in light, near-black in dark
+$canvas: color(null, 'surface');
+$action: color(null, 'primary', 500);
+$select: color(null, 'secondary', 500);
+$select-soft: color(null, 'secondary', 200);
+$info: color(null, 'info', 500);
+
+// Elevation levels for the tactile button physics: rest on 4px, lift to 6px on hover, collapse when pressed.
+$rest: 4;
+$lift: 6;
+$press: 0;
+
+// ---- Components (MCP names → theme-function arguments) -----------------------------------------------
+
+@function _themes($variant) {
+    $ink: ink($variant);
+
+    @return (
+        // Actions
+        contained-button: (
+            background: $action,
+            // Black on #ff006e is 5.5:1 (white is only 3.8:1). Hover/focus go lighter so black keeps passing.
+            foreground: #000,
+            hover-background: color(null, 'primary', 400),
+            focus-background: color(null, 'primary', 400),
+            active-background: $action,
+            focus-visible-background: $select,
+            focus-visible-foreground: #000,
+            border-color: $ink,
+            hover-border-color: $ink,
+            focus-border-color: $ink,
+            focus-visible-border-color: $ink,
+            active-border-color: $ink,
+            resting-shadow: $rest,
+            hover-shadow: $lift,
+            focus-shadow: $press, // a click focuses too, so pressed = focused: collapse
+            active-shadow: $press,
+        ),
+        outlined-button: (
+            foreground: $ink,
+            focus-visible-background: $select,
+            hover-background: $select,
+            focus-background: $select-soft,
+            active-background: $select,
+            border-color: $ink,
+            hover-border-color: $ink,
+            focus-border-color: $ink,
+            focus-visible-border-color: $ink,
+            active-border-color: $ink,
+        ),
+        flat-button: (
+            foreground: $ink,
+            focus-visible-background: $select,
+            hover-background: $select,
+            focus-background: $select-soft,
+            active-background: $select,
+        ),
+        fab-button: (
+            background: $select,
+            focus-visible-background: $action,
+            border-color: $ink,
+            hover-border-color: $ink,
+            focus-border-color: $ink,
+            focus-visible-border-color: $ink,
+            active-border-color: $ink,
+            resting-shadow: $rest,
+            hover-shadow: $lift,
+            focus-shadow: $press, // a click focuses too, so pressed = focused: collapse
+            active-shadow: $press,
+        ),
+        flat-icon-button: (foreground: $ink, hover-background: $select, focus-background: $select-soft, active-background: $select),
+        outlined-icon-button: (foreground: $ink, hover-background: $select, focus-background: $select-soft, active-background: $select, border-color: $ink),
+        contained-icon-button: (background: $action, foreground: #000, border-color: $ink),
+        button-group: (
+            item-background: $paper,
+            item-hover-background: $select-soft,
+            item-selected-background: $select,
+            item-border-color: $ink,
+            item-hover-border-color: $ink,
+            item-focused-border-color: $ink,
+            item-selected-border-color: $ink,
+            item-selected-hover-border-color: $ink,
+        ),
+
+        // Small data / status
+        chip: (
+            background: $paper,
+            selected-background: $select,
+            border-color: $ink,
+            hover-border-color: $ink,
+            focus-border-color: $ink,
+            selected-border-color: $ink,
+            hover-selected-border-color: $ink,
+            focus-selected-border-color: $ink,
+        ),
+        badge: (background-color: $action, icon-color: #000, text-color: #000, border-color: $ink),
+        avatar: (background: $select),
+        progress-linear: (track-color: color(null, 'gray', 200), fill-color-default: $action),
+        progress-circular: (track-color: color(null, 'gray', 200), fill-color-default: $action),
+        rating: (symbol-full-color: $action, symbol-empty-color: color(null, 'gray', 400)),
+
+        // Inputs
+        input-group: (
+            box-background: $paper,
+            border-color: $ink,
+            idle-bottom-line-color: $ink,
+            focused-border-color: $action,
+            focused-bottom-line-color: $action,
+        ),
+        select: (toggle-button-background: $select),
+        combo: (toggle-button-background: $select),
+        checkbox: (fill-color: $select, empty-color: $ink),
+        radio: (fill-color: $ink, empty-color: $ink),
+        switch: (track-on-color: $select, track-off-color: $paper, border-color: $ink, border-on-color: $ink),
+        slider: (track-color: $action, base-track-color: color(null, 'gray', 300), thumb-color: $ink),
+
+        // Macro containers
+        card: (background: $paper, outline-color: $ink, resting-shadow: var(--ig-elevation-12), hover-shadow: var(--ig-elevation-12)),
+        dialog: (background: $paper, border-color: $ink, shadow: var(--ig-elevation-12)),
+        expansion-panel: (header-background: $select, body-background: $paper),
+        navbar: (background: $select, border-color: $ink),
+        tabs: (
+            item-background: $paper,
+            item-active-color: $ink, // pink text on paper is only 3.7:1; pink stays for the indicator
+            indicator-color: $action,
+            item-hover-background: $select-soft,
+            item-active-background: $paper,
+            border-color: $ink,
+        ),
+        list: (
+            background: $paper,
+            item-background: $paper,
+            item-background-hover: $select-soft,
+            item-background-selected: $select,
+            border-color: $ink,
+        ),
+        drop-down: (background-color: $paper, selected-item-background: $select),
+        snackbar: (background: $ink),
+        toast: (background: $ink),
+        tooltip: (background: $ink),
+        banner: (banner-background: $paper),
+
+        // Calendar: pink header block, square date nodes, lime selection, ink outline for today.
+        calendar: (
+            header-background: $action,
+            content-background: $paper,
+            border-color: $ink,
+            date-hover-border-color: $ink,
+            date-hover-background: $select-soft,
+            date-focus-border-color: $ink,
+            date-selected-background: $select,
+            date-selected-border-color: $ink,
+            date-current-border-color: $ink,
+            date-selected-range-background: $select-soft,
+        ),
+
+        // Data grid: macro shell + lime header block; micro cells stay neutral; selection is a solid pink fill.
+        grid: (
+            background: $paper,
+            foreground: $ink,
+            accent-color: $ink, // accents read as text/icons in the grid (summaries, paging) — keep them ink
+            header-background: $select,
+            header-border-color: $ink,
+            header-border-width: 2px,
+            row-selected-background: $action,
+            row-selected-hover-background: color(null, 'primary', 400),
+            row-hover-background: $select-soft,
+            cell-active-border-color: $ink,
+            cell-active-border-width: 2px,
+            grid-shadow: var(--ig-elevation-12),
+        ),
+        grid-toolbar: (background: $canvas),
+        excel-filtering: (background: $paper, foreground: $ink, accent-color: $ink),
+        grid-summary: (background-color: $canvas),
+        paginator: (background: $canvas),
+        column-actions: (background: $paper),
+        action-strip: (actions-background: $paper),
+        query-builder: (
+            background: $paper,
+            header-background: $select,
+            subquery-header-background: $canvas,
+            subquery-border-color: $ink,
+        ),
+    );
+}
+
+$light-neo-brutalism-schema: design-schema(schemas.$light-material-schema, 'neo-brutalism', _themes(light));
+$dark-neo-brutalism-schema: design-schema(schemas.$dark-material-schema, 'neo-brutalism', _themes(dark));

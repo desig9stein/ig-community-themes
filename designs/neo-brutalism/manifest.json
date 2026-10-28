@@ -1,13 +1,13 @@
 {
   "$schema": "../../schema/manifest.schema.json",
-  "name": "Brutalism",
-  "slug": "brutalism",
-  "description": "Loud colors, zero radius, ink outlines and hard offset shadows.",
+  "name": "Neo-Brutalism",
+  "slug": "neo-brutalism",
+  "description": "Ink outlines, zero-blur offset shadows, square corners and electric pink/lime accents, tiered for dense data UIs.",
   "base": "material",
   "variants": ["light", "dark"],
   "maintainers": ["desig9stein"],
   "authorType": "ai",
-  "tags": ["bold", "playful", "flat"],
+  "tags": ["bold", "brutalist", "high-contrast"],
   "license": "MIT",
   "fonts": ["https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"]
 }

@@ -1,0 +1,21 @@
+.states {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 1px;
+  background: var(--ig-gray-300);
+  border: 1px solid var(--ig-gray-300);
+  font-family: var(--ig-font-family);
+}
+.states > * { background: var(--ig-surface-500); color: var(--ig-gray-900); padding: 16px; }
+.states .name { font: 600 13px/1.4 system-ui, sans-serif; display: flex; flex-direction: column; gap: 4px; }
+.states .name small { font-weight: 400; color: var(--ig-gray-600); }
+.states .cells { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.states .cells > * { flex: none; }
+.states igc-calendar { width: 320px; }
+.states igc-list { width: 280px; }
+.states igc-tabs { width: 420px; }
+.states igc-expansion-panel { width: 360px; }
+.states igc-input, .states igc-select, .states igc-combo, .states igc-date-picker { width: 220px; }
+.states igc-slider { width: 240px; }
+.states igc-linear-progress { width: 240px; }
+.states .overlay-box { position: relative; transform: translateZ(0); width: 340px; height: 72px; overflow: hidden; }

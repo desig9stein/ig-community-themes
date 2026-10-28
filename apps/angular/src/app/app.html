@@ -1,0 +1,221 @@
+<igx-navbar title="IG Community Themes · Angular">
+  <igx-navbar-action>
+    <a igxIconButton="flat" href="../"><igx-icon>arrow_back</igx-icon></a>
+  </igx-navbar-action>
+  <div class="theme-controls">
+    <igx-select [value]="theme.design().slug" (selectionChanging)="theme.update({ slug: $event.newSelection.value })" type="border">
+      <label igxLabel>Design</label>
+      @for (d of theme.designs; track d.slug) {
+        <igx-select-item [value]="d.slug">{{ d.name }}</igx-select-item>
+      }
+    </igx-select>
+    <igx-buttongroup>
+      @for (v of theme.design().variants; track v) {
+        <button igxButton [selected]="theme.variant() === v" (click)="theme.update({ variant: v })">{{ v }}</button>
+      }
+    </igx-buttongroup>
+    <igx-switch [checked]="theme.baseOnly()" (change)="theme.update({ baseOnly: $event.checked })">Base only</igx-switch>
+  </div>
+</igx-navbar>
+
+<main>
+  <section>
+    <h2>Hierarchical grid</h2>
+    <igx-hierarchical-grid id="hgrid" [data]="cities" primaryKey="ID" [rowEditable]="true" rowSelection="multiple"
+      [allowFiltering]="true" filterMode="excelStyleFilter" [allowAdvancedFiltering]="true" [moving]="true"
+      height="680px" width="100%">
+      <igx-grid-toolbar>
+        <igx-grid-toolbar-title>City weather</igx-grid-toolbar-title>
+        <igx-grid-toolbar-actions>
+          <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+          <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+          <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+          <igx-grid-toolbar-exporter></igx-grid-toolbar-exporter>
+        </igx-grid-toolbar-actions>
+      </igx-grid-toolbar>
+
+      <igx-column field="City" [pinned]="true" [sortable]="true" [resizable]="true" width="160px"></igx-column>
+      <igx-column field="Country" [sortable]="true" [resizable]="true"></igx-column>
+      <igx-column field="Climate" [sortable]="true">
+        <ng-template igxCell let-value>
+          <igx-chip>{{ value }}</igx-chip>
+        </ng-template>
+      </igx-column>
+      <igx-column field="Population" dataType="number" [sortable]="true" [hasSummary]="true"></igx-column>
+      <igx-column field="AvgTemp" header="Avg °C" dataType="number" [sortable]="true" [hasSummary]="true"></igx-column>
+      <igx-column field="Humidity" dataType="number" [sortable]="true" width="180px">
+        <ng-template igxCell let-value>
+          <igx-linear-bar [value]="value" [textVisibility]="false" class="cell-bar"></igx-linear-bar>
+          <span class="cell-num">{{ value }}%</span>
+        </ng-template>
+      </igx-column>
+      <igx-column field="Alert" dataType="boolean" [sortable]="true"></igx-column>
+
+      <igx-action-strip>
+        <igx-grid-pinning-actions></igx-grid-pinning-actions>
+        <igx-grid-editing-actions></igx-grid-editing-actions>
+      </igx-action-strip>
+
+      <igx-row-island key="Days" [allowFiltering]="true" filterMode="excelStyleFilter" rowSelection="multiple">
+        <igx-column field="Date" dataType="date" [sortable]="true"></igx-column>
+        <igx-column field="Condition" [sortable]="true">
+          <ng-template igxCell let-value>
+            <igx-chip [variant]="conditionChip(value)">{{ value }}</igx-chip>
+          </ng-template>
+        </igx-column>
+        <igx-column field="Min" dataType="number" [hasSummary]="true"></igx-column>
+        <igx-column field="Max" dataType="number" [hasSummary]="true"></igx-column>
+        <igx-column field="Precipitation" dataType="percent" [sortable]="true"></igx-column>
+        <igx-column field="UVIndex" header="UV" dataType="number">
+          <ng-template igxCell let-value>
+            <igx-badge [value]="value" [type]="value > 7 ? 'error' : value > 4 ? 'warning' : 'success'"></igx-badge>
+          </ng-template>
+        </igx-column>
+        <igx-row-island key="Hours">
+          <igx-column field="Hour"></igx-column>
+          <igx-column field="Temperature" dataType="number"></igx-column>
+          <igx-column field="Wind" dataType="number"></igx-column>
+          <igx-column field="Condition"></igx-column>
+        </igx-row-island>
+      </igx-row-island>
+
+      <igx-paginator [perPage]="8"></igx-paginator>
+    </igx-hierarchical-grid>
+  </section>
+
+  <section>
+    <h2>Grid · group by, filter row, summaries</h2>
+    <igx-grid id="grid" [data]="days" [groupingExpressions]="grouping" [allowFiltering]="true" height="420px"
+      width="100%" rowSelection="single" [moving]="true">
+      <igx-column field="Country" [groupable]="true" [sortable]="true"></igx-column>
+      <igx-column field="City" [groupable]="true" [sortable]="true"></igx-column>
+      <igx-column field="Date" dataType="date" [sortable]="true"></igx-column>
+      <igx-column field="Condition" [groupable]="true"></igx-column>
+      <igx-column field="Max" dataType="number" [hasSummary]="true"></igx-column>
+      <igx-column field="Precipitation" dataType="number" [hasSummary]="true"></igx-column>
+    </igx-grid>
+  </section>
+
+  <section class="two-col">
+    <div>
+      <h2>Query builder</h2>
+      <igx-query-builder [entities]="entities" [expressionTree]="expressionTree">
+        <igx-query-builder-header title="Weather query"></igx-query-builder-header>
+      </igx-query-builder>
+    </div>
+    <div>
+      <h2>Calendar</h2>
+      <igx-calendar selection="range" [weekStart]="1"></igx-calendar>
+    </div>
+  </section>
+
+  <section>
+    <h2>Controls</h2>
+    <div class="controls">
+      <igx-card elevated>
+        <igx-card-header>
+          <igx-avatar igxCardThumbnail initials="SO"></igx-avatar>
+          <h3 igxCardHeaderTitle>Sofia</h3>
+          <h5 igxCardHeaderSubtitle>Partly cloudy · 11°C</h5>
+        </igx-card-header>
+        <igx-card-content>
+          <igx-input-group type="box">
+            <label igxLabel>Trip name</label>
+            <input igxInput name="trip" value="Weekend in Vitosha" />
+          </igx-input-group>
+          <igx-input-group>
+            <label igxLabel>Notes</label>
+            <input igxInput name="notes" required />
+            <igx-hint>Required</igx-hint>
+          </igx-input-group>
+          <igx-date-picker [value]="date"><label igxLabel>Date</label></igx-date-picker>
+          <igx-combo [data]="cityNames" [(ngModel)]="selectedCities" placeholder="Cities"><label igxLabel>Cities</label></igx-combo>
+        </igx-card-content>
+        <igx-card-actions>
+          <button igxButton="contained" igxRipple>Save</button>
+          <button igxButton="outlined">Cancel</button>
+          <button igxButton="flat">Help</button>
+        </igx-card-actions>
+      </igx-card>
+
+      <div class="stack">
+        <div class="row">
+          <button igxButton="contained">Contained</button>
+          <button igxButton="outlined">Outlined</button>
+          <button igxButton="flat">Flat</button>
+          <button igxButton="fab"><igx-icon>add</igx-icon></button>
+          <button igxButton="contained" disabled>Disabled</button>
+        </div>
+        <div class="row">
+          <button igxIconButton="flat"><igx-icon>favorite</igx-icon></button>
+          <button igxIconButton="outlined"><igx-icon>share</igx-icon></button>
+          <button igxIconButton="contained"><igx-icon>edit</igx-icon></button>
+          <igx-chip>Default</igx-chip>
+          <igx-chip [selectable]="true" [selected]="true">Selected</igx-chip>
+          <igx-chip [removable]="true">Removable</igx-chip>
+          <igx-chip [disabled]="true">Disabled</igx-chip>
+          <igx-badge value="4"></igx-badge>
+          <igx-badge type="success" icon="check"></igx-badge>
+          <igx-avatar initials="IG" shape="rounded"></igx-avatar>
+        </div>
+        <div class="row">
+          <igx-checkbox [checked]="true">Rain alerts</igx-checkbox>
+          <igx-checkbox>Share</igx-checkbox>
+          <igx-radio name="unit" value="c" [checked]="true">°C</igx-radio>
+          <igx-radio name="unit" value="f">°F</igx-radio>
+          <igx-switch [checked]="true">Live</igx-switch>
+          <igx-switch>Offline</igx-switch>
+        </div>
+        <igx-slider [value]="40"></igx-slider>
+        <div class="row">
+          <igx-linear-bar [value]="64" class="grow"></igx-linear-bar>
+          <igx-circular-bar [value]="72"></igx-circular-bar>
+        </div>
+        <igx-tabs>
+          <igx-tab-item>
+            <igx-tab-header><span igxTabHeaderLabel>Today</span></igx-tab-header>
+            <igx-tab-content>Clear skies all day.</igx-tab-content>
+          </igx-tab-item>
+          <igx-tab-item>
+            <igx-tab-header><span igxTabHeaderLabel>Week</span></igx-tab-header>
+            <igx-tab-content>Rain from Thursday.</igx-tab-content>
+          </igx-tab-item>
+          <igx-tab-item [disabled]="true">
+            <igx-tab-header><span igxTabHeaderLabel>Month</span></igx-tab-header>
+          </igx-tab-item>
+        </igx-tabs>
+        <igx-expansion-panel>
+          <igx-expansion-panel-header>
+            <igx-expansion-panel-title>Forecast details</igx-expansion-panel-title>
+          </igx-expansion-panel-header>
+          <igx-expansion-panel-body>Humidity 62%, wind 14 km/h from the north-west.</igx-expansion-panel-body>
+        </igx-expansion-panel>
+      </div>
+
+      <div class="stack">
+        <igx-list>
+          <igx-list-item [isHeader]="true">Cities</igx-list-item>
+          @for (c of cities.slice(0, 4); track c.ID) {
+            <igx-list-item>
+              <igx-avatar igxListThumbnail [initials]="c.City.slice(0, 2)"></igx-avatar>
+              <span igxListLineTitle>{{ c.City }}</span>
+              <span igxListLineSubTitle>{{ c.Country }}</span>
+              <span igxListAction>{{ c.AvgTemp }}°</span>
+            </igx-list-item>
+          }
+        </igx-list>
+        <div class="row">
+          <button igxButton="outlined" [igxTooltipTarget]="tip">Hover for tooltip</button>
+          <div #tip="tooltip" igxTooltip>Wind gusts up to 40 km/h</div>
+          <button igxButton="contained" (click)="dialog.open()">Open dialog</button>
+        </div>
+        <igx-snackbar [isVisible]="true" [autoHide]="false" actionText="Undo" [outlet]="snackOutlet">Forecast updated</igx-snackbar>
+        <div igxOverlayOutlet #snackOutlet="overlay-outlet" class="snack-outlet"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<igx-dialog #dialog id="dialog" title="Delete saved trip?" message="This cannot be undone." leftButtonLabel="Cancel"
+  rightButtonLabel="Delete" (leftButtonSelect)="dialog.close()" (rightButtonSelect)="dialog.close()">
+</igx-dialog>
