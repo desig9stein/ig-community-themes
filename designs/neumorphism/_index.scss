@@ -1,0 +1,230 @@
+// Neumorphism (soft UI) for Ignite UI.
+//
+// Rules this design follows:
+// - One shared surface: page, cards, buttons and panels use the same base color; depth comes only from shadows.
+// - Paired shadows from one light source (top-left): a highlight to the top-left and a shade to the bottom-right.
+//   Shadow colors are derived from the surface itself, so light and dark variants stay consistent.
+// - Raised = resting interactive elements and containers; inset = pressed controls and input "wells".
+// - Monochrome with one saturated accent, used for interactive text, selection and focus — color, not shadow, carries
+//   state (accessibility: shadow edges alone are ~1.4:1, below the 3:1 non-text minimum).
+// - Generous radii (roundness 1), clean sans-serif, high-contrast body text.
+// - Dense data (grid cells, list rows) stays flat; only the frames and controls are extruded.
+// Only theme tokens are used, so it works the same in Angular, Web Components and Blazor.
+@use 'sass:map';
+@use 'sass:string';
+@use 'igniteui-theming' as *;
+@use 'igniteui-theming/sass/themes/schemas' as schemas;
+@use 'igniteui-theming/sass/typography/presets' as type;
+@use '../../lib' as *;
+
+// ---- Foundations -------------------------------------------------------------------------------------
+
+$neumorphism-light-palette: palette(
+    $primary: #3d5af1, // accent (white text 5.2:1, accent text on surface ≥ 4.5:1 at shade 600+)
+    $secondary: #6b7a99,
+    $surface: #e0e5ec, // the shared soft surface
+    $gray: #2d3142, // text: ~10:1 on the surface
+    $info: #2f80ed,
+    $success: #1f9d6b,
+    $warn: #e8a33d,
+    $error: #e5484d,
+    $variant: light,
+    $generator: 'legacy'
+);
+
+$neumorphism-dark-palette: palette(
+    $primary: #8ea2ff,
+    $secondary: #9aa6bf,
+    $surface: #2a2d32,
+    $gray: #e6e8ee,
+    $info: #6fb1ff,
+    $success: #4cd4a0,
+    $warn: #f2c063,
+    $error: #ff7a7f,
+    $variant: dark,
+    $generator: 'legacy'
+);
+
+$neumorphism-typeface: "'Manrope', 'Inter', sans-serif";
+$neumorphism-type-scale: type.$material-type-scale;
+$neumorphism-roundness: 1;
+
+// Highlight and shade derived from the surface (relative color syntax), so the same elevations work in both
+// variants: lighter/darker versions of the surface, never pure white/black (that breaks the effect in dark mode).
+$_light: string.unquote('hsl(from var(--ig-surface-500) h s calc(l + 9))');
+$_shade: string.unquote('hsl(from var(--ig-surface-500) h s calc(l - 14))');
+
+@function _raised($o) {
+    @return string.unquote('#{-$o} #{-$o} #{$o * 2} #{$_light}, #{$o} #{$o} #{$o * 2} #{$_shade}');
+}
+
+@function _inset($o) {
+    @return string.unquote('inset #{$o} #{$o} #{$o * 2} #{$_shade}, inset #{-$o} #{-$o} #{$o * 2} #{$_light}');
+}
+
+// Level map: 1-3 subtle (2-3px), 4-7 controls (4-5px), 8-12 containers (6-8px), 13-19 floating (9-12px),
+// 20 = pressed (inset), 21 = well (inset, for recessed fields), 24 = dialogs (12px).
+$neumorphism-elevations: (0: none);
+
+@for $i from 1 through 24 {
+    $value: if($i < 4, _raised(2px + $i * 0.5), if($i < 8, _raised(4px + ($i - 4) * 0.5), if($i < 13, _raised(6px + ($i - 8) * 0.5), _raised(9px + ($i - 13) * 0.3))));
+    $value: if($i == 20, _inset(4px), if($i == 21, _inset(3px), if($i == 24, _raised(12px), $value)));
+    $neumorphism-elevations: map.merge($neumorphism-elevations, ($i: $value));
+}
+
+// ---- Roles -------------------------------------------------------------------------------------------
+
+$surface: color(null, 'surface');
+$text: color(null, 'gray', 900);
+$well: string.unquote('hsl(from var(--ig-surface-500) h s calc(l - 3))'); // recessed fill for fields/tracks
+$accent: color(null, 'primary', 500);
+
+// Accent used as text on the surface must clear 4.5:1: darker in light, lighter in dark.
+@function _accent-text($variant) {
+    @return if($variant == light, color(null, 'primary', 600), color(null, 'primary', 300));
+}
+
+// A muted accent tint for selection: the accent mixed into the surface, so it stays soft in both variants.
+@function _accent-soft($variant) {
+    @return string.unquote('color-mix(in srgb, var(--ig-primary-500) 18%, var(--ig-surface-500))');
+}
+
+$raised: 6;
+$lift: 8;
+$pressed: 20;
+
+// ---- Components (MCP names → theme-function arguments) -----------------------------------------------
+
+@function _themes($variant) {
+    $accent-text: _accent-text($variant);
+    $accent-soft: _accent-soft($variant);
+
+    @return (
+        // Buttons are made of the surface; the accent label tells you they're interactive.
+        contained-button: (
+            background: $surface,
+            foreground: $accent-text,
+            hover-background: $surface,
+            focus-background: $surface,
+            active-background: $surface,
+            focus-visible-background: $accent-soft,
+            focus-visible-border-color: $accent,
+            resting-shadow: $raised,
+            hover-shadow: $lift,
+            focus-shadow: $pressed, // a click focuses too: pressed reads as pushed in
+            active-shadow: $pressed,
+        ),
+        fab-button: (
+            background: $accent,
+            focus-visible-border-color: $text,
+            resting-shadow: $raised,
+            hover-shadow: $lift,
+            focus-shadow: $pressed,
+            active-shadow: $pressed,
+        ),
+        outlined-button: (
+            foreground: $accent-text,
+            hover-foreground: $accent-text,
+            focus-foreground: $accent-text,
+            focus-visible-foreground: $accent-text,
+            active-foreground: $accent-text,
+            hover-background: $accent-soft,
+            focus-background: $accent-soft,
+            active-background: $accent-soft,
+            border-color: $accent-text,
+            hover-border-color: $accent-text,
+            focus-border-color: $accent-text,
+            focus-visible-border-color: $accent-text,
+            active-border-color: $accent-text,
+        ),
+        flat-button: (
+            foreground: $accent-text,
+            hover-foreground: $accent-text,
+            focus-foreground: $accent-text,
+            focus-visible-foreground: $accent-text,
+            active-foreground: $accent-text,
+            hover-background: $accent-soft,
+            focus-background: $accent-soft,
+            active-background: $accent-soft,
+        ),
+        flat-icon-button: (foreground: $accent-text, hover-background: $accent-soft, focus-background: $accent-soft, active-background: $accent-soft),
+        outlined-icon-button: (foreground: $accent-text, hover-background: $accent-soft, focus-background: $accent-soft, active-background: $accent-soft, border-color: $accent-text),
+        contained-icon-button: (background: $surface, foreground: $accent-text),
+        button-group: (
+            item-background: $surface,
+            item-selected-background: $accent-soft,
+            item-text-color: $text,
+            item-selected-text-color: $accent-text,
+        ),
+
+        chip: (background: $well, selected-background: $accent-soft),
+        badge: (background-color: $accent),
+        avatar: (background: $accent-soft),
+        progress-linear: (track-color: $well, fill-color-default: $accent),
+        progress-circular: (track-color: $well, fill-color-default: $accent),
+        rating: (symbol-full-color: $accent, symbol-empty-color: color(null, 'gray', 400)),
+
+        // Inputs are recessed wells.
+        input-group: (
+            box-background: $well,
+            search-background: $well,
+            border-color: color(null, 'gray', 500),
+            idle-bottom-line-color: color(null, 'gray', 500),
+            focused-border-color: $accent,
+        ),
+        select: (toggle-button-background: $well),
+        combo: (toggle-button-background: $well),
+        checkbox: (fill-color: $accent, empty-color: color(null, 'gray', 600)),
+        radio: (fill-color: $accent, empty-color: color(null, 'gray', 600)),
+        switch: (track-on-color: $accent, track-off-color: $well, thumb-off-color: $surface, border-color: color(null, 'gray', 500)),
+        slider: (track-color: $accent, base-track-color: $well, thumb-color: $accent),
+
+        // Containers are raised panels of the same surface.
+        card: (background: $surface, outline-color: transparent, resting-shadow: 10, hover-shadow: 12),
+        dialog: (background: $surface, shadow: 24),
+        expansion-panel: (header-background: $surface, body-background: $surface),
+        navbar: (background: $surface, shadow: 6),
+        tabs: (
+            item-background: $surface,
+            item-active-color: $accent-text,
+            indicator-color: $accent,
+            item-hover-background: $well,
+        ),
+        list: (background: $surface, item-background: $surface, item-background-hover: $well, item-background-selected: $accent-soft),
+        drop-down: (background-color: $surface, selected-item-background: $accent-soft),
+        snackbar: (background: $text),
+        toast: (background: $text),
+        tooltip: (background: $text),
+        banner: (banner-background: $surface),
+
+        calendar: (
+            header-background: $surface,
+            content-background: $surface,
+            date-hover-background: $well,
+            date-selected-background: $accent,
+            date-current-border-color: $accent,
+            date-selected-range-background: $accent-soft,
+        ),
+
+        // Data stays flat and legible: the grid is one raised panel, the cells are plain.
+        grid: (
+            background: $surface,
+            foreground: $text,
+            accent-color: $accent-text,
+            header-background: $well,
+            row-hover-background: $well,
+            row-selected-background: $accent-soft,
+            row-selected-hover-background: $accent-soft,
+            grid-shadow: 10,
+        ),
+        grid-toolbar: (background: $surface),
+        excel-filtering: (background: $surface, foreground: $text, accent-color: $accent-text),
+        paginator: (background: $surface),
+        column-actions: (background: $surface),
+        action-strip: (actions-background: $surface),
+        query-builder: (background: $surface, header-background: $surface, subquery-header-background: $well, subquery-border-color: color(null, 'gray', 300)),
+    );
+}
+
+$light-neumorphism-schema: design-schema(schemas.$light-material-schema, 'neumorphism', _themes(light));
+$dark-neumorphism-schema: design-schema(schemas.$dark-material-schema, 'neumorphism', _themes(dark));

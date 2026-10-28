@@ -24,7 +24,7 @@ const ROWS = [
   ['calendar', 'Calendar', `<igc-calendar data-live selection="range" id="cal-range"></igc-calendar><igc-calendar selection="single" id="cal-single"></igc-calendar>`],
   ['expansion-panel', 'Expansion panel', `<igc-expansion-panel data-live><h4 slot="title">Collapsed</h4><p>Body</p></igc-expansion-panel><igc-expansion-panel open><h4 slot="title">Open</h4><p>Humidity 62%, wind 14 km/h.</p></igc-expansion-panel>`],
   ['card', 'Card · navbar', `<igc-card data-live elevated style="width:280px"><igc-card-header><h3 slot="title">Card title</h3><span slot="subtitle">Subtitle</span></igc-card-header><igc-card-content>Body copy for the card.</igc-card-content><igc-card-actions><igc-button slot="start" variant="flat">Action</igc-button></igc-card-actions></igc-card><igc-navbar style="width:360px"><h4>Navbar</h4></igc-navbar>`],
-  ['tooltip', 'Tooltip · snackbar · toast', `<igc-button data-live id="tip-target" variant="outlined">Hover me</igc-button><igc-tooltip anchor="tip-target">Tooltip text</igc-tooltip><div class="overlay-box"><igc-snackbar open keep-open action-text="Undo">Snackbar message</igc-snackbar></div><div class="overlay-box"><igc-toast open display-time="600000">Toast message</igc-toast></div>`],
+  ['tooltip', 'Tooltip', `<igc-button data-live id="tip-target" variant="outlined">Hover me</igc-button><igc-tooltip anchor="tip-target">Tooltip text</igc-tooltip>`],
 ];
 
 const host = document.getElementById('states');

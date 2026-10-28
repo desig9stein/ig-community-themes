@@ -66,6 +66,16 @@
                 "inject": false
               },
               {
+                "input": "src/themes/design-neumorphism-light.scss",
+                "bundleName": "design-neumorphism-light",
+                "inject": false
+              },
+              {
+                "input": "src/themes/design-neumorphism-dark.scss",
+                "bundleName": "design-neumorphism-dark",
+                "inject": false
+              },
+              {
                 "input": "src/themes/design-nord-light.scss",
                 "bundleName": "design-nord-light",
                 "inject": false

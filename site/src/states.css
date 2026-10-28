@@ -18,4 +18,3 @@
 .states igc-input, .states igc-select, .states igc-combo, .states igc-date-picker { width: 220px; }
 .states igc-slider { width: 240px; }
 .states igc-linear-progress { width: 240px; }
-.states .overlay-box { position: relative; transform: translateZ(0); width: 340px; height: 72px; overflow: hidden; }

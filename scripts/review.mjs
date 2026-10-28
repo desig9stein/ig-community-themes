@@ -80,7 +80,11 @@ const SCENARIOS = [
     id: 'dashboard',
     title: 'Web Components · dashboard',
     page: 'preview',
-    run: async (page) => [{ name: 'dashboard', shot: await page.locator('.dash').screenshot() }],
+    run: async (page) => {
+      // Live weather (or the offline fallback after the 5s fetch timeout) must be on screen first.
+      await page.waitForFunction(() => document.getElementById('temp')?.textContent !== '–', null, { timeout: 8000 }).catch(() => {});
+      return [{ name: 'dashboard', shot: await page.locator('.dash').screenshot() }];
+    },
   },
   {
     id: 'angular',

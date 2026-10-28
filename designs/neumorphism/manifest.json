@@ -1,0 +1,13 @@
+{
+  "$schema": "../../schema/manifest.schema.json",
+  "name": "Neumorphism",
+  "slug": "neumorphism",
+  "description": "Soft UI: one shared surface, paired light/dark shadows from a top-left light, inset wells and pressed states, a single accent.",
+  "base": "material",
+  "variants": ["light", "dark"],
+  "maintainers": ["desig9stein"],
+  "authorType": "ai",
+  "tags": ["soft", "neumorphic", "monochrome"],
+  "license": "MIT",
+  "fonts": ["https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap"]
+}

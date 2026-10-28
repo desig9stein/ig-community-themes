@@ -9,6 +9,7 @@ Community-made **design systems** for Ignite UI for Angular, Web Components and 
 | --- | --- | --- |
 | [Neo-Brutalism](designs/neo-brutalism/) | material | Ink outlines, zero-blur offset shadows, square corners, pink/lime accents, tiered for dense data UIs |
 | [Nord](designs/nord/) | indigo | Calm arctic palette with soft corners |
+| [Neumorphism](designs/neumorphism/) | material | Soft UI: one shared surface, paired light/dark shadows, inset wells and pressed states, one accent |
 
 ## What is a community design system?
 
@@ -72,6 +73,10 @@ npm i igniteui-community-themes
 npm install && npm --prefix apps/angular install
 npm run build:site          # designs + WC site + Angular app → _site/
 npx vite preview            # /, /preview.html, /states.html, /angular/
+
+# or, while iterating on a design:
+npm run build:angular       # once (and after design changes): builds the Angular preview
+npm run dev                 # WC pages with hot reload; /angular/ serves the last Angular build
 npm run review -- <slug>    # screenshots + contrast audit → review/<slug>/index.html
 ```
 
