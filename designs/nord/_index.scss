@@ -9,8 +9,8 @@
 @use 'igniteui-theming/sass/elevations/presets' as elevation;
 @use '../../lib' as *;
 
-$nord-light-palette: palette($primary: #5e81ac, $secondary: #88c0d0, $surface: #eceff4, $gray: #3b4252, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #81a1c1, $variant: light, $generator: 'legacy');
-$nord-dark-palette: palette($primary: #88c0d0, $secondary: #81a1c1, $surface: #2e3440, $gray: #d8dee9, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #5e81ac, $variant: dark, $generator: 'legacy');
+$nord-light-palette: palette($primary: #5e81ac, $secondary: #88c0d0, $surface: #eceff4, $gray: #3b4252, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #4c6a92, $variant: light, $generator: 'legacy');
+$nord-dark-palette: palette($primary: #88c0d0, $secondary: #81a1c1, $surface: #2e3440, $gray: #d8dee9, $success: #a3be8c, $warn: #ebcb8b, $error: #bf616a, $info: #4c6a92, $variant: dark, $generator: 'legacy');
 
 $nord-typeface: "'Inter', sans-serif";
 $nord-type-scale: type.$indigo-type-scale;
@@ -41,7 +41,7 @@ $canvas: color(null, 'surface');
     @return (
         contained-button: (background: $frost),
         outlined-button: (foreground: $frost-text),
-        flat-button: (foreground: $frost-text, hover-foreground: $frost-text, hover-background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 14%, var(--ig-gray-50))')),
+        flat-button: (foreground: $frost-text, hover-foreground: $text, active-foreground: $text, hover-background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 24%, var(--ig-surface-500))'), active-background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 32%, var(--ig-surface-500))')),
         flat-icon-button: (foreground: $frost-text),
         outlined-icon-button: (foreground: $frost-text),
         contained-icon-button: (
@@ -58,7 +58,14 @@ $canvas: color(null, 'surface');
             item-selected-focus-hover-background: $frost-text,
         ),
         // Dark text on a pale frost tint; selected chips use frost-text with derived (light) text.
-        chip: (background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 16%, var(--ig-gray-50))'), text-color: $text, selected-background: $frost-text),
+        chip: (
+            background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 16%, var(--ig-gray-50))'),
+            text-color: $text,
+            selected-background: $frost-text,
+            selected-text-color: contrast-color(null, 'primary', if($variant == light, 700, 300)),
+            hover-selected-text-color: contrast-color(null, 'primary', if($variant == light, 700, 300)),
+            focus-selected-text-color: contrast-color(null, 'primary', if($variant == light, 700, 300)),
+        ),
         badge: (background-color: $frost),
         avatar: (background: $frost),
         input-group: (

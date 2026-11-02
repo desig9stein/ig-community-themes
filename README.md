@@ -129,5 +129,8 @@ apps/angular/                  Angular hierarchical grid preview
   aren't tokens, so it uses colors, hard shadows and shadow collapse instead.
 - `--ig-radius-factor: 0` squares everything that uses it. In Angular that includes the radio button, which has
   no radius token of its own.
+- Some states have no token at all, so the review always lists them as "no visible change". The expansion-panel
+  header and the grid's sortable header have no hover token, and the Angular radio has no hover halo token.
+  These are gaps in the component libraries, not in the designs.
 - A few derived colors come from the composed grid itself. For example, the summary area is 12% of the grid
   foreground mixed into its background.

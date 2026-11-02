@@ -107,6 +107,11 @@ $pressed: 20;
 
 @function _themes($variant) {
     $violet-text: _violet-text($variant);
+    // Peach mixed into a dark surface turns muddy brown, so dark mode uses lilac clay for cards.
+    $card: if($variant == light, $card, _mix('primary', 16%));
+    // On lilac dark cards a 12% violet hover vanishes; dark hovers use a stronger tint with the plain text color.
+    $hover-bg: if($variant == light, $violet-faint, _mix('primary', 32%));
+    $hover-fg: if($variant == light, $violet-text, $text);
 
     @return (
         contained-button: (
@@ -134,11 +139,11 @@ $pressed: 20;
         ),
         outlined-button: (
             foreground: $violet-text,
-            hover-foreground: $violet-text,
+            hover-foreground: $hover-fg,
             focus-foreground: $violet-text,
             focus-visible-foreground: $violet-text,
             active-foreground: $violet-text,
-            hover-background: $violet-faint,
+            hover-background: $hover-bg,
             focus-background: $violet-soft,
             focus-visible-background: $violet-soft,
             active-background: $violet-soft,
@@ -150,17 +155,17 @@ $pressed: 20;
         ),
         flat-button: (
             foreground: $violet-text,
-            hover-foreground: $violet-text,
+            hover-foreground: $hover-fg,
             focus-foreground: $violet-text,
             focus-visible-foreground: $violet-text,
             active-foreground: $violet-text,
-            hover-background: $violet-faint,
+            hover-background: $hover-bg,
             focus-background: $violet-soft,
             focus-visible-background: $violet-soft,
             active-background: $violet-soft,
         ),
-        flat-icon-button: (foreground: $violet-text, hover-background: $violet-faint, focus-background: $violet-soft, active-background: $violet-soft),
-        outlined-icon-button: (foreground: $violet-text, hover-background: $violet-faint, focus-background: $violet-soft, active-background: $violet-soft, border-color: $violet-text),
+        flat-icon-button: (foreground: $violet-text, hover-background: $hover-bg, focus-background: $violet-soft, active-background: $violet-soft),
+        outlined-icon-button: (foreground: $violet-text, hover-background: $hover-bg, focus-background: $violet-soft, active-background: $violet-soft, border-color: $violet-text),
         contained-icon-button: (background: $violet),
         button-group: (
             item-background: $surface,
