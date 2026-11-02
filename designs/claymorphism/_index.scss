@@ -111,7 +111,11 @@ $pressed: 20;
     @return (
         contained-button: (
             background: $violet,
-            hover-background: color(null, 'primary', if($variant == light, 400, 600)),
+            // Keep the label constant across states; hover/press move away from it so contrast only improves.
+            foreground: if($variant == light, #fff, #1f1b2e),
+            hover-background: color(null, 'primary', if($variant == light, 600, 300)),
+            focus-background: color(null, 'primary', if($variant == light, 600, 300)),
+            active-background: color(null, 'primary', if($variant == light, 700, 200)),
             focus-visible-background: $peach,
             focus-visible-foreground: #2b2540,
             resting-shadow: $rest,
