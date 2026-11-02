@@ -375,7 +375,12 @@ const url = (scenario, slug, variant, baseOnly) => {
 async function contrast(page) {
   await page.addScriptTag({ content: AXE });
   const { violations } = await page.evaluate(() =>
-    window.axe.run({ exclude: [['igc-trial-watermark']] }, { runOnly: ['color-contrast'], resultTypes: ['violations'] }),
+    window.axe.run({
+      // igc-trial-watermark: licensing banner, not themed.
+      // igc-avatar: axe measures the initials against the row behind the avatar's shadow DOM instead of the avatar's
+      // own fill (verified via computed styles: e.g. black on #ccff00 is reported as black on the list row).
+      exclude: [['igc-trial-watermark'], ['igc-avatar']],
+    }, { runOnly: ['color-contrast'], resultTypes: ['violations'] }),
   );
   return (violations[0]?.nodes ?? []).map((n) => ({
     target: n.target.flat().join(' > '),

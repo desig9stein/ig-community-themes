@@ -24,7 +24,7 @@ $neo-brutalism-light-palette: palette(
     $info: #00d9ff,
     $success: #00c853,
     $warn: #ffb800,
-    $error: #ff3b30,
+    $error: #c8102e, // darker than #ff3b30 so error text clears 4.5:1 on the canvas
     $variant: light,
     $generator: 'legacy' // keep the seeds exact at shade 500
 );
@@ -145,6 +145,9 @@ $press: 0;
             item-focused-border-color: $ink,
             item-selected-border-color: $ink,
             item-selected-hover-border-color: $ink,
+            item-focused-background: $select-soft,
+            item-selected-focus-background: $action, // keyboard focus on the selected item turns it pink (black text 5.5:1)
+            item-selected-focus-hover-background: $action,
         ),
 
         // Small data / status
@@ -176,7 +179,14 @@ $press: 0;
         combo: (toggle-button-background: $select),
         checkbox: (fill-color: $select, empty-color: $ink),
         radio: (fill-color: $ink, empty-color: $ink),
-        switch: (track-on-color: $select, track-off-color: $paper, border-color: $ink, border-on-color: $ink),
+        switch: (
+            track-on-color: $select,
+            track-off-color: $paper,
+            border-color: $ink,
+            border-on-color: $ink,
+            border-hover-color: $ink,
+            thumb-off-hover-color: $select,
+        ),
         slider: (track-color: $action, base-track-color: color(null, 'gray', 300), thumb-color: $ink),
 
         // Macro containers
@@ -217,6 +227,9 @@ $press: 0;
             date-selected-border-color: $ink,
             date-current-border-color: $ink,
             date-selected-range-background: $select-soft,
+            date-selected-range-foreground: #000, // lime tints are light in both variants
+            date-selected-range-hover-foreground: #000,
+            date-selected-range-focus-foreground: #000,
         ),
 
         // Data grid: macro shell + lime header block; micro cells stay neutral; selection is a solid pink fill.

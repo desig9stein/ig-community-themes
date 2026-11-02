@@ -2,6 +2,7 @@
 // Polar Night surfaces, Snow Storm text, Frost accents, Aurora status colors (https://www.nordtheme.com).
 // Components are themed through their igniteui-theming theme functions, so all states derive from the
 // few primary tokens below.
+@use 'sass:string';
 @use 'igniteui-theming' as *;
 @use 'igniteui-theming/sass/themes/schemas' as schemas;
 @use 'igniteui-theming/sass/typography/presets' as type;
@@ -40,7 +41,7 @@ $canvas: color(null, 'surface');
     @return (
         contained-button: (background: $frost),
         outlined-button: (foreground: $frost-text),
-        flat-button: (foreground: $frost-text),
+        flat-button: (foreground: $frost-text, hover-foreground: $frost-text, hover-background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 14%, var(--ig-gray-50))')),
         flat-icon-button: (foreground: $frost-text),
         outlined-icon-button: (foreground: $frost-text),
         contained-icon-button: (
@@ -48,8 +49,16 @@ $canvas: color(null, 'surface');
             foreground: contrast-color(null, 'primary', if($variant == light, 700, 300)),
         ),
         fab-button: (background: color(null, 'secondary', 500)),
-        button-group: (item-background: $panel, item-selected-background: $frost),
-        chip: (background: $frost-soft, selected-background: $frost),
+        button-group: (
+            item-background: $panel,
+            item-selected-background: $frost,
+            item-focused-background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 14%, var(--ig-gray-50))'),
+            item-focused-border-color: $frost,
+            item-selected-focus-background: $frost-text,
+            item-selected-focus-hover-background: $frost-text,
+        ),
+        // Dark text on a pale frost tint; selected chips use frost-text with derived (light) text.
+        chip: (background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 16%, var(--ig-gray-50))'), text-color: $text, selected-background: $frost-text),
         badge: (background-color: $frost),
         avatar: (background: $frost),
         input-group: (
@@ -57,10 +66,10 @@ $canvas: color(null, 'surface');
             focused-border-color: $frost,
             idle-secondary-color: $text-muted,
         ),
-        checkbox: (fill-color: $frost, label-color: $text),
-        radio: (fill-color: $frost, label-color: $text),
+        checkbox: (fill-color: $frost, label-color: $text, empty-color-hover: $frost-text, label-color-hover: $frost-text),
+        radio: (fill-color: $frost, label-color: $text, hover-color: string.unquote('color-mix(in srgb, var(--ig-primary-500) 22%, var(--ig-gray-50))'), label-color-hover: $frost-text),
         switch: (track-on-color: $frost),
-        slider: (track-color: $frost, thumb-color: $frost),
+        slider: (track-color: $frost, thumb-color: $frost, thumb-focus-color: $frost-text, thumb-border-focus-color: $text),
         navbar: (background: $panel),
         card: (background: $panel),
         list: (background: $panel, header-text-color: $frost-text),

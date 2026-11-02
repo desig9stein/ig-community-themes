@@ -8,7 +8,7 @@
 }
 .states > * { background: var(--ig-surface-500); color: var(--ig-gray-900); padding: 16px; }
 .states .name { font: 600 13px/1.4 system-ui, sans-serif; display: flex; flex-direction: column; gap: 4px; }
-.states .name small { font-weight: 400; color: var(--ig-gray-600); }
+.states .name small { font-weight: 400; color: var(--ig-gray-800); }
 .states .cells { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
 .states .cells > * { flex: none; }
 .states igc-calendar { width: 320px; }
