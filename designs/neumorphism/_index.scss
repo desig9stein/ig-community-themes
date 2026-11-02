@@ -27,7 +27,7 @@ $neumorphism-light-palette: palette(
     $info: #2f80ed,
     $success: #1f9d6b,
     $warn: #e8a33d,
-    $error: #e5484d,
+    $error: #b42318, // darker than usual: red text must clear 4.5:1 on the soft surface
     $variant: light,
     $generator: 'legacy'
 );
@@ -89,8 +89,11 @@ $accent: color(null, 'primary', 500);
     @return string.unquote('color-mix(in srgb, var(--ig-primary-500) 18%, var(--ig-surface-500))');
 }
 
+// An even fainter tint for hover on surfaces and data rows (color carries state, not just shadow).
+$accent-faint: string.unquote('color-mix(in srgb, var(--ig-primary-500) 10%, var(--ig-surface-500))');
+
 $raised: 6;
-$lift: 8;
+$lift: 12; // hover must read as a lift, not a 1px nudge
 $pressed: 20;
 
 // ---- Components (MCP names → theme-function arguments) -----------------------------------------------
@@ -104,7 +107,7 @@ $pressed: 20;
         contained-button: (
             background: $surface,
             foreground: $accent-text,
-            hover-background: $surface,
+            hover-background: $accent-faint,
             focus-background: $surface,
             active-background: $surface,
             focus-visible-background: $accent-soft,
@@ -154,7 +157,12 @@ $pressed: 20;
             item-background: $surface,
             item-selected-background: $accent-soft,
             item-text-color: $text,
-            item-selected-text-color: $accent-text,
+            item-selected-text-color: $text, // text stays dark so the stronger focus tint keeps AA contrast
+            item-hover-background: $accent-faint,
+            item-focused-background: $accent-faint,
+            item-focused-border-color: $accent,
+            item-selected-focus-background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 32%, var(--ig-surface-500))'),
+            item-selected-focus-hover-background: string.unquote('color-mix(in srgb, var(--ig-primary-500) 32%, var(--ig-surface-500))'),
         ),
 
         chip: (background: $well, selected-background: $accent-soft),
@@ -174,23 +182,31 @@ $pressed: 20;
         ),
         select: (toggle-button-background: $well),
         combo: (toggle-button-background: $well),
-        checkbox: (fill-color: $accent, empty-color: color(null, 'gray', 600)),
-        radio: (fill-color: $accent, empty-color: color(null, 'gray', 600)),
-        switch: (track-on-color: $accent, track-off-color: $well, thumb-off-color: $surface, border-color: color(null, 'gray', 500)),
+        checkbox: (fill-color: $accent, empty-color: color(null, 'gray', 600), empty-color-hover: $accent-text, label-color-hover: $accent-text),
+        radio: (fill-color: $accent, empty-color: color(null, 'gray', 600), hover-color: $accent-soft, label-color-hover: $accent-text),
+        switch: (
+            track-on-color: $accent,
+            track-off-color: $well,
+            thumb-off-color: $surface,
+            border-color: color(null, 'gray', 500),
+            border-hover-color: $accent-text,
+            thumb-off-hover-color: $accent-faint,
+            label-hover-color: $accent-text,
+        ),
         slider: (track-color: $accent, base-track-color: $well, thumb-color: $accent),
 
         // Containers are raised panels of the same surface.
         card: (background: $surface, outline-color: transparent, resting-shadow: 10, hover-shadow: 12),
         dialog: (background: $surface, shadow: 24),
-        expansion-panel: (header-background: $surface, body-background: $surface),
+        expansion-panel: (header-background: $surface, body-background: $surface, header-focus-background: $accent-faint),
         navbar: (background: $surface, shadow: 6),
         tabs: (
             item-background: $surface,
             item-active-color: $accent-text,
             indicator-color: $accent,
-            item-hover-background: $well,
+            item-hover-background: $accent-faint,
         ),
-        list: (background: $surface, item-background: $surface, item-background-hover: $well, item-background-selected: $accent-soft),
+        list: (background: $surface, item-background: $surface,   item-background-selected: $accent-soft),
         drop-down: (background-color: $surface, selected-item-background: $accent-soft),
         snackbar: (background: $text),
         toast: (background: $text),
@@ -200,7 +216,8 @@ $pressed: 20;
         calendar: (
             header-background: $surface,
             content-background: $surface,
-            date-hover-background: $well,
+            date-hover-background: $accent-faint,
+            date-hover-foreground: $accent-text,
             date-selected-background: $accent,
             date-current-border-color: $accent,
             date-selected-range-background: $accent-soft,
@@ -212,7 +229,7 @@ $pressed: 20;
             foreground: $text,
             accent-color: $accent-text,
             header-background: $well,
-            row-hover-background: $well,
+            row-hover-background: $accent-faint,
             row-selected-background: $accent-soft,
             row-selected-hover-background: $accent-soft,
             grid-shadow: 10,

@@ -27,10 +27,24 @@ const ROWS = [
   ['tooltip', 'Tooltip', `<igc-button data-live id="tip-target" variant="outlined">Hover me</igc-button><igc-tooltip anchor="tip-target">Tooltip text</igc-tooltip>`],
 ];
 
+// What a user actually hovers / presses in each row (Playwright CSS pierces shadow roots).
+// 'static' rows aren't interactive, so only their fixed states are captured.
+const TARGETS = {
+  'button-group': 'igc-toggle-button:not([selected])',
+  badge: 'static',
+  slider: '[data-live] [part~="thumb"]',
+  progress: 'static',
+  tabs: 'igc-tab:not([selected]):not([disabled]) [part~="tab-header"]',
+  list: 'igc-list-item:not([selected])',
+  calendar: '[data-live] [part~="date"]:not([part~="inactive"])',
+  'expansion-panel': '[data-live] [part~="header"]',
+  card: 'igc-card igc-button',
+};
+
 const host = document.getElementById('states');
 host.innerHTML = ROWS.map(
   ([id, label, html]) =>
-    `<div class="name" data-row="${id}">${label}<small>${id}</small></div><div class="cells" data-row="${id}">${html}</div>`,
+    `<div class="name" data-row="${id}">${label}<small>${id}</small></div><div class="cells" data-row="${id}" data-target='${TARGETS[id] ?? '[data-live]'}'>${html}</div>`,
 ).join('');
 
 // Fixed selections so selected / range / today states are visible.

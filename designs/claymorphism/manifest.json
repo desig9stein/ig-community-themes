@@ -1,0 +1,13 @@
+{
+  "$schema": "../../schema/manifest.schema.json",
+  "name": "Claymorphism",
+  "slug": "claymorphism",
+  "description": "Soft 3D clay: pastel fills, big rounded shapes, an outer shadow plus inner highlight and shade on every raised surface.",
+  "base": "material",
+  "variants": ["light", "dark"],
+  "maintainers": ["desig9stein"],
+  "authorType": "ai",
+  "tags": ["soft", "playful", "pastel", "3d"],
+  "license": "MIT",
+  "fonts": ["https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap"]
+}

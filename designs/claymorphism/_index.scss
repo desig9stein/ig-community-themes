@@ -1,0 +1,249 @@
+// Claymorphism for Ignite UI.
+//
+// Rules this design follows (clay.css / Smashing Magazine recipe):
+// - Every raised surface is "clay": one soft outer drop shadow + an inner highlight top-left + an inner shade
+//   bottom-right. The insets are translucent white/black, so they read on any fill — unlike neumorphism, the fill
+//   is independent of the background, which is what makes pastel blocks possible.
+// - Big, friendly shapes (roundness 1) and a rounded typeface (Nunito).
+// - Pastel / desaturated surfaces for containers; one saturated violet for calls to action and selection.
+// - Pressed = the outer shadow disappears and the inner shade deepens (squished clay).
+// - Every interactive control changes color on hover and focus, not only shadow (keyboard focus must be visible).
+// - Dense data (grid cells, list rows) stays flat on a clay panel.
+// Only theme tokens are used, so it works the same in Angular, Web Components and Blazor.
+@use 'sass:map';
+@use 'sass:string';
+@use 'igniteui-theming' as *;
+@use 'igniteui-theming/sass/themes/schemas' as schemas;
+@use 'igniteui-theming/sass/typography/presets' as type;
+@use '../../lib' as *;
+
+// ---- Foundations -------------------------------------------------------------------------------------
+
+$claymorphism-light-palette: palette(
+    $primary: #7c3aed, // violet CTA: white text 5.7:1
+    $secondary: #ffb38a, // peach clay
+    $surface: #f3eefc, // lavender-white canvas
+    $gray: #2b2540, // violet ink
+    $info: #2f7fd8,
+    $success: #1f8f63,
+    $warn: #f0a020,
+    $error: #b4234f,
+    $variant: light,
+    $generator: 'legacy'
+);
+
+$claymorphism-dark-palette: palette(
+    $primary: #b69cff,
+    $secondary: #ffb38a,
+    $surface: #1f1b2e,
+    $gray: #ece8f7,
+    $info: #7ab8ff,
+    $success: #5fd6a4,
+    $warn: #ffc95c,
+    $error: #ff7aa2,
+    $variant: dark,
+    $generator: 'legacy'
+);
+
+$claymorphism-typeface: "'Nunito', 'Quicksand', sans-serif";
+$claymorphism-type-scale: type.$material-type-scale;
+$claymorphism-roundness: 1;
+
+// Clay shadow: outer drop (tinted from the surface, so it's violet-gray in light and near-black in dark)
+// + inner highlight top-left + inner shade bottom-right.
+$_drop: string.unquote('hsl(from var(--ig-surface-500) h calc(s * 0.6) calc(l * 0.45) / 0.35)');
+
+@function _clay($o) {
+    $i: math-max(2px, $o * 0.5);
+
+    @return string.unquote(
+        '0 #{$o} #{$o * 2} #{$_drop}, inset #{-$i} #{-$i} #{$i * 2} rgb(0 0 0 / 0.14), inset #{$i} #{$i} #{$i * 2} rgb(255 255 255 / 0.45)'
+    );
+}
+
+@function math-max($a, $b) {
+    @return if($a > $b, $a, $b);
+}
+
+// Level map: 1-3 small (3-5px), 4-7 controls (6-9px), 8-12 containers (10-14px), 13-19 floating, 20 = pressed
+// (insets only, deeper shade), 21 = soft well for fields, 24 = dialogs.
+$claymorphism-elevations: (0: none);
+
+@for $i from 1 through 24 {
+    $value: _clay(2px + $i * 1px);
+    $value: if($i == 20, string.unquote('inset 3px 3px 8px rgb(0 0 0 / 0.22), inset -2px -2px 6px rgb(255 255 255 / 0.35)'), $value);
+    $value: if($i == 21, string.unquote('inset 2px 2px 5px rgb(0 0 0 / 0.12), inset -2px -2px 5px rgb(255 255 255 / 0.5)'), $value);
+    $claymorphism-elevations: map.merge($claymorphism-elevations, ($i: $value));
+}
+
+// ---- Roles -------------------------------------------------------------------------------------------
+
+$surface: color(null, 'surface');
+$text: color(null, 'gray', 900);
+$violet: color(null, 'primary', 500);
+$peach: color(null, 'secondary', 500);
+
+@function _mix($color, $pct) {
+    @return string.unquote('color-mix(in srgb, var(--ig-#{$color}-500) #{$pct}, var(--ig-surface-500))');
+}
+
+$card: _mix('secondary', 22%); // peach clay block
+$panel: _mix('primary', 10%); // lilac clay block (headers, navbar, toolbar)
+$field: _mix('gray', 4%); // soft field well
+$violet-faint: _mix('primary', 12%); // hover tint
+$violet-soft: _mix('primary', 24%); // selection tint
+$violet-strong: _mix('primary', 38%); // selected + focused
+
+// Violet as text on light surfaces must clear 4.5:1: darker in light, lighter in dark.
+@function _violet-text($variant) {
+    @return if($variant == light, color(null, 'primary', 600), color(null, 'primary', 300));
+}
+
+$rest: 6;
+$lift: 10;
+$pressed: 20;
+
+// ---- Components (MCP names → theme-function arguments) -----------------------------------------------
+
+@function _themes($variant) {
+    $violet-text: _violet-text($variant);
+
+    @return (
+        contained-button: (
+            background: $violet,
+            hover-background: color(null, 'primary', if($variant == light, 400, 600)),
+            focus-visible-background: $peach,
+            focus-visible-foreground: #2b2540,
+            resting-shadow: $rest,
+            hover-shadow: $lift,
+            focus-shadow: $pressed, // a click focuses too: pressed reads as squished
+            active-shadow: $pressed,
+        ),
+        fab-button: (
+            background: $peach,
+            foreground: #2b2540,
+            focus-visible-background: $violet,
+            resting-shadow: $rest,
+            hover-shadow: $lift,
+            focus-shadow: $pressed,
+            active-shadow: $pressed,
+        ),
+        outlined-button: (
+            foreground: $violet-text,
+            hover-foreground: $violet-text,
+            focus-foreground: $violet-text,
+            focus-visible-foreground: $violet-text,
+            active-foreground: $violet-text,
+            hover-background: $violet-faint,
+            focus-background: $violet-soft,
+            focus-visible-background: $violet-soft,
+            active-background: $violet-soft,
+            border-color: $violet-text,
+            hover-border-color: $violet-text,
+            focus-border-color: $violet-text,
+            focus-visible-border-color: $violet-text,
+            active-border-color: $violet-text,
+        ),
+        flat-button: (
+            foreground: $violet-text,
+            hover-foreground: $violet-text,
+            focus-foreground: $violet-text,
+            focus-visible-foreground: $violet-text,
+            active-foreground: $violet-text,
+            hover-background: $violet-faint,
+            focus-background: $violet-soft,
+            focus-visible-background: $violet-soft,
+            active-background: $violet-soft,
+        ),
+        flat-icon-button: (foreground: $violet-text, hover-background: $violet-faint, focus-background: $violet-soft, active-background: $violet-soft),
+        outlined-icon-button: (foreground: $violet-text, hover-background: $violet-faint, focus-background: $violet-soft, active-background: $violet-soft, border-color: $violet-text),
+        contained-icon-button: (background: $violet),
+        button-group: (
+            item-background: $surface,
+            item-text-color: $text,
+            item-hover-background: $violet-faint,
+            item-focused-background: $violet-faint,
+            item-focused-border-color: $violet,
+            item-selected-background: $violet-soft,
+            item-selected-text-color: $text,
+            item-selected-hover-background: $violet-soft,
+            item-selected-focus-background: $violet-strong,
+            item-selected-focus-hover-background: $violet-strong,
+        ),
+
+        chip: (background: $panel, selected-background: $violet-soft),
+        badge: (background-color: $violet),
+        avatar: (background: $card),
+        progress-linear: (track-color: $field, fill-color-default: $violet),
+        progress-circular: (track-color: $field, fill-color-default: $violet),
+        rating: (symbol-full-color: $peach, symbol-empty-color: color(null, 'gray', 400)),
+
+        input-group: (
+            box-background: $field,
+            search-background: $field,
+            border-color: color(null, 'gray', 400),
+            idle-bottom-line-color: color(null, 'gray', 500),
+            focused-border-color: $violet,
+        ),
+        select: (toggle-button-background: $panel),
+        combo: (toggle-button-background: $panel),
+        checkbox: (fill-color: $violet, empty-color: color(null, 'gray', 600), empty-color-hover: $violet-text, label-color-hover: $violet-text),
+        radio: (fill-color: $violet, empty-color: color(null, 'gray', 600), hover-color: $violet-soft, label-color-hover: $violet-text),
+        switch: (
+            track-on-color: $violet,
+            track-off-color: $field,
+            border-color: color(null, 'gray', 500),
+            border-hover-color: $violet-text,
+            thumb-off-hover-color: $violet-faint,
+            label-hover-color: $violet-text,
+        ),
+        slider: (track-color: $violet, base-track-color: $field, thumb-color: $violet),
+
+        card: (background: $card, outline-color: transparent, resting-shadow: 10, hover-shadow: 12),
+        dialog: (background: $surface, shadow: 24),
+        expansion-panel: (header-background: $panel, body-background: $surface, header-focus-background: $violet-soft),
+        navbar: (background: $panel, shadow: 6),
+        tabs: (
+            item-background: $surface,
+            item-active-color: $violet-text,
+            indicator-color: $violet,
+            item-hover-background: $violet-faint,
+        ),
+        list: (background: $surface, item-background: $surface, item-background-hover: $violet-faint, item-background-selected: $violet-soft),
+        drop-down: (background-color: $surface, selected-item-background: $violet-soft),
+        snackbar: (background: $text),
+        toast: (background: $text),
+        tooltip: (background: $text),
+        banner: (banner-background: $card),
+
+        calendar: (
+            header-background: $violet,
+            content-background: $surface,
+            date-hover-background: $violet-faint,
+            date-hover-foreground: $violet-text,
+            date-selected-background: $violet,
+            date-current-border-color: $violet,
+            date-selected-range-background: $violet-soft,
+        ),
+
+        grid: (
+            background: $surface,
+            foreground: $text,
+            accent-color: $violet-text,
+            header-background: $panel,
+            row-hover-background: $violet-faint,
+            row-selected-background: $violet-soft,
+            row-selected-hover-background: $violet-soft,
+            grid-shadow: 10,
+        ),
+        grid-toolbar: (background: $surface),
+        excel-filtering: (background: $surface, foreground: $text, accent-color: $violet-text),
+        paginator: (background: $surface),
+        column-actions: (background: $surface),
+        action-strip: (actions-background: $surface),
+        query-builder: (background: $surface, header-background: $panel, subquery-header-background: $card, subquery-border-color: color(null, 'gray', 300)),
+    );
+}
+
+$light-claymorphism-schema: design-schema(schemas.$light-material-schema, 'claymorphism', _themes(light));
+$dark-claymorphism-schema: design-schema(schemas.$dark-material-schema, 'claymorphism', _themes(dark));

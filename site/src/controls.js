@@ -27,8 +27,9 @@ export async function setupDesignControls({ onApply } = {}) {
   const apply = () => {
     const baseOnly = $('compare').checked;
     $('base-theme').href = baseThemeUrl(variant, design.base);
-    $('design-theme').href = `./${design.slug}/${variant}.css`;
-    $('design-theme').disabled = baseOnly;
+    // Remove the href rather than `disabled`: a link disabled before its sheet loads is re-enabled on load.
+    if (baseOnly) $('design-theme').removeAttribute('href');
+    else $('design-theme').href = `./${design.slug}/${variant}.css`;
 
     for (const href of design.fonts ?? []) {
       if (!document.querySelector(`link[href="${CSS.escape(href)}"]`)) {

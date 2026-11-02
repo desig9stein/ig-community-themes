@@ -56,6 +56,16 @@
             "styles": [
               "src/styles.scss",
               {
+                "input": "src/themes/design-claymorphism-light.scss",
+                "bundleName": "design-claymorphism-light",
+                "inject": false
+              },
+              {
+                "input": "src/themes/design-claymorphism-dark.scss",
+                "bundleName": "design-claymorphism-dark",
+                "inject": false
+              },
+              {
                 "input": "src/themes/design-neo-brutalism-light.scss",
                 "bundleName": "design-neo-brutalism-light",
                 "inject": false

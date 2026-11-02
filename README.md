@@ -10,6 +10,7 @@ Community-made **design systems** for Ignite UI for Angular, Web Components and 
 | [Neo-Brutalism](designs/neo-brutalism/) | material | Ink outlines, zero-blur offset shadows, square corners, pink/lime accents, tiered for dense data UIs |
 | [Nord](designs/nord/) | indigo | Calm arctic palette with soft corners |
 | [Neumorphism](designs/neumorphism/) | material | Soft UI: one shared surface, paired light/dark shadows, inset wells and pressed states, one accent |
+| [Claymorphism](designs/claymorphism/) | material | Soft 3D clay: pastel blocks, outer + inner shadows, squish on press, violet CTA |
 
 ## What is a community design system?
 
@@ -87,9 +88,14 @@ npm run review -- <slug>    # screenshots + contrast audit → review/<slug>/ind
   row editing, action strip, summaries, paging, child grids. Below it there's a group-by grid with a filter row, a
   standalone query builder, a calendar and a gallery of controls. Themes are compiled through Angular's own
   `theme($palette, $schema)`.
-- **`npm run review`** drives real interactions in Chromium (hover, keyboard focus, press, menus, dialogs, row
-  editing), screenshots each state next to the plain base theme, and runs axe-core color-contrast on both.
-  A contrast violation only counts when the base theme doesn't have it too. `--strict` fails on any.
+- **`npm run review`** drives real interactions in Chromium (hover, Tab-key focus, press, menus, dialogs, row
+  editing) on the WC states page and on 20 Angular controls. It screenshots each state next to the plain base
+  theme and runs axe-core color-contrast on both. A contrast violation only counts when the base theme doesn't
+  have it too. It also flags **states with no visible change**:
+  - invisible keyboard focus is an error (WCAG 2.4.7);
+  - flat hover and pressed states are warnings.
+
+  `--strict` fails on new contrast issues or invisible focus.
 
 The Angular grids and query builder are under the Infragistics commercial license (see the `igniteui-angular`
 LICENSE); the preview runs them as a trial, which is why they show a watermark.
